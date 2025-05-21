@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="home">
+    <header>
+        <a href="#home" class="site-title-link"><div class="site-title">Evan M. Matthews</div></a>
+        <nav>
+            <ul>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#resume">Resume/CV</a></li>
+            </ul>
+        </nav>
+        <div id="themeToggle" title="Toggle light/dark mode">☀️</div>
+    </header>
+
+    <div id="hero-section">
+        <canvas id="waveformCanvas"></canvas>
+        <div class="controls">
+            <div>
+                <label for="hue">🎨</label>
+                <input type="range" id="hue" class="hue-slider" min="0" max="360" value="180">
+            </div>
+            <div>
+                <label for="complexity">〰️</label>
+                <input type="range" id="complexity" min="0" max="200" value="50">
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+
+    <section id="about">
+        <h2>About Me</h2>
+        <p>
+            Hello! I'm Evan M. Matthews, a passionate developer and creator exploring the intersections of technology and art.
+            This interactive waveform is just one example of my interest in dynamic web experiences.
+        </p>
+        <p>
+            I specialize in [mention your specialties, e.g., full-stack development, front-end animations, data visualization]. 
+            My goal is to build engaging and intuitive digital solutions. Feel free to explore my blog and resume to learn more about my work and projects.
+        </p>
+    </section>
+
+    <section id="blog">
+        <h2>Blog</h2>
+        <div class="blog-previews">
+            <!-- Blog previews will be dynamically loaded here by script.js -->
+        </div>
+    </section>
+
+    <section id="resume">
+        <h2>Resume / CV</h2>
+        <div class="document-previews">
+            <div class="document-preview-box">
+                <h3>My Resume</h3>
+                <p>A concise summary of my professional experience, skills, and education. Click to view or download.</p>
+                <a href="assets/documents/resume.pdf" target="_blank" class="read-more">View Resume</a>
+            </div>
+            <div class="document-preview-box">
+                <h3>My Curriculum Vitae (CV)</h3>
+                <p>A more detailed account of my academic achievements, publications, and extensive experiences. Click to view or download.</p>
+                <a href="assets/documents/cv.pdf" target="_blank" class="read-more">View CV</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Connect With Me</h2>
+        <div class="social-links">
+            <a href="https://github.com/ematth" target="_blank" title="GitHub" class="social-link">
+                <img src="assets/icons/github.svg" alt="GitHub Logo">
+            </a>
+            <a href="https://www.linkedin.com/in/ematth/" target="_blank" title="LinkedIn" class="social-link">
+                <img src="assets/icons/linkedin.svg" alt="LinkedIn Logo">
+            </a>
+            <a href="https://instagram.com/evanmatthews_" target="_blank" title="Instagram" class="social-link">
+                <img src="assets/icons/instagram.svg" alt="Instagram Logo">
+            </a>
+            <!-- <a href="#" target="_blank" title="Twitter/X" class="social-link">
+                <img src="assets/icons/twitter.svg" alt="Twitter/X Logo">
+            </a> -->
+            <!-- Add more social links as needed -->
+        </div>
+    </section>
+
+</body>
+</html> 

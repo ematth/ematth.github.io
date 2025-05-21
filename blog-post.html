@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            overflow-y: auto; /* Ensure scrollbar is present if content is long */
+        }
+        .blog-post-container {
+            max-width: 800px;
+            margin: 100px auto 40px auto; /* Increased top margin, added bottom margin */
+            padding: 30px;
+            background-color: var(--section-bg);
+            border-radius: 8px;
+            color: var(--text-color);
+        }
+        .blog-post-container h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .blog-post-container .post-meta {
+            font-size: 0.9em;
+            color: var(--text-color); /* Muted text color */
+            margin-bottom: 30px;
+        }
+        .blog-post-container pre {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto; /* For long code lines */
+            border: 1px solid var(--slider-track-bg);
+        }
+        .blog-post-container code {
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        }
+        .blog-post-container h2 {
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .blog-post-container h3 {
+            font-size: 1.4em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .blog-post-container p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .blog-post-container ul, .blog-post-container ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .blog-post-container li {
+            margin-bottom: 8px;
+        }
+        .blog-post-container a {
+            color: #00ffff;
+            text-decoration: none;
+        }
+        .blog-post-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body id="home"> <!-- ID for potential smooth scroll from header links -->
+    <header>
+        <a href="index.html#home" class="site-title-link"><div class="site-title">Evan M. Matthews</div></a>
+        <nav>
+            <ul>
+                <li><a href="index.html#about">About Me</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="index.html#resume">Resume/CV</a></li>
+            </ul>
+        </nav>
+        <div id="themeToggle" title="Toggle light/dark mode">☀️</div>
+    </header>
+
+    <div class="blog-post-container">
+        <h1 id="postTitle"></h1>
+        <p class="post-meta">Published on: <span id="postDate"></span></p>
+        <div id="postContent" class="markdown-body">
+            <!-- Markdown content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const themeToggleButton = document.getElementById('themeToggle');
+        let isLightMode = localStorage.getItem('theme') === 'light';
+
+        function applyTheme(isLight) {
+            document.body.classList.toggle('light-mode', isLight);
+            themeToggleButton.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            isLightMode = !isLightMode;
+            applyTheme(isLightMode);
+        });
+        applyTheme(isLightMode); // Apply initial theme
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const postFile = params.get('post');
+
+            const postTitleElem = document.getElementById('postTitle');
+            const postDateElem = document.getElementById('postDate');
+            const postContentElem = document.getElementById('postContent');
+
+            if (postFile) {
+                try {
+                    const response = await fetch(`blogs/${postFile}.md`);
+                    if (!response.ok) {
+                        throw new Error(`Could not load blog post: ${response.statusText}`);
+                    }
+                    const markdown = await response.text();
+                    
+                    // Basic frontmatter parsing
+                    const frontmatterMatch = markdown.match(/^---[\s\S]*?---/);
+                    let content = markdown;
+                    let title = postFile.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); // Default title from filename
+                    let date = 'N/A';
+
+                    if (frontmatterMatch) {
+                        const frontmatterText = frontmatterMatch[0];
+                        content = markdown.substring(frontmatterText.length).trim();
+                        
+                        const titleMatch = frontmatterText.match(/^title:\s*(.*)$/m);
+                        if (titleMatch && titleMatch[1]) title = titleMatch[1].trim();
+                        
+                        const dateMatch = frontmatterText.match(/^date:\s*(.*)$/m);
+                        if (dateMatch && dateMatch[1]) date = dateMatch[1].trim();
+                    }
+                    
+                    postTitleElem.textContent = title;
+                    document.title = title; // Update page title
+                    postDateElem.textContent = date;
+                    
+                    // Use marked.js to parse Markdown content to HTML
+                    postContentElem.innerHTML = marked.parse(content);
+
+                } catch (error) {
+                    console.error('Error fetching blog post:', error);
+                    postContentElem.innerHTML = `<p>Error loading post: ${error.message}. Please ensure the file exists in the 'blogs' directory and the link is correct.</p>`;
+                }
+            } else {
+                postContentElem.innerHTML = '<p>No blog post specified. Please select a post from the blog page.</p>';
+            }
+        });
+    </script>
+</body>
+</html> 

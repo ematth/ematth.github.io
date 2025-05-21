@@ -1,0 +1,363 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    /* overflow: hidden; */ /* Allow scrolling for sections */
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+:root {
+    --bg-color: #111;
+    --text-color: #fff;
+    --header-bg: rgba(0, 0, 0, 0.3);
+    --canvas-bg: #111;
+    --controls-bg: rgba(0, 0, 0, 0.3);
+    --slider-track-bg: #555;
+    --icon-color: #fff;
+    --section-bg: #1a1a1a; /* Slightly different for sections in dark mode */
+}
+
+body.light-mode {
+    --bg-color: #f0f0f0;
+    --text-color: #333;
+    --header-bg: rgba(255, 255, 255, 0.5);
+    --canvas-bg: #f0f0f0; /* Light background for canvas in light mode */
+    --controls-bg: rgba(220, 220, 220, 0.8);
+    --slider-track-bg: #ccc;
+    --icon-color: #333;
+    --section-bg: #fff; /* White for sections in light mode */
+}
+
+canvas {
+    display: block; /* Remove extra space below canvas */
+    background-color: var(--canvas-bg);
+    transition: background-color 0.3s ease;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 50px;
+    background-color: var(--header-bg);
+    z-index: 1000; /* Ensure header is above the canvas */
+    box-sizing: border-box;
+    display: flex; /* For aligning nav and toggle */
+    justify-content: space-between; /* Pushes nav and toggle apart */
+    align-items: center;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end; /* Align links to the right */
+}
+
+nav li {
+    margin-left: 30px;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    /* font-family: Arial, sans-serif; */ /* Replaced by body font stack */
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #00ffff; /* Cyan color on hover, matching the waveform */
+}
+
+#themeToggle {
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px; /* Added some horizontal padding */
+    color: var(--icon-color);
+    margin-left: 20px; /* Space between nav and toggle if nav is not empty */
+}
+
+.controls {
+    position: absolute; /* Changed from fixed to absolute */
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    padding: 10px 20px;
+    background-color: var(--controls-bg);
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+.controls div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.controls label {
+    color: var(--icon-color);
+    /* font-family: Arial, sans-serif; */ /* Fallback font - Replaced by body font stack */
+    font-size: 20px; /* Increased size for icons */
+    cursor: default; /* Make it look like a label */
+    line-height: 1; /* Ensure icons align well */
+}
+
+.controls input[type="range"] {
+    width: 250px; /* Increased width */
+    height: 20px; /* Increased height for better touch/click target and visual */
+    /* background-image removed from general slider, will be specific to hue-slider */
+    -webkit-appearance: none; /* Override default appearance */
+    appearance: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: var(--slider-track-bg);
+}
+
+.controls input[type="range"].hue-slider {
+    background-image: linear-gradient(to right, 
+        hsl(0, 100%, 50%), 
+        hsl(60, 100%, 50%), 
+        hsl(120, 100%, 50%), 
+        hsl(180, 100%, 50%), 
+        hsl(240, 100%, 50%), 
+        hsl(300, 100%, 50%), 
+        hsl(360, 100%, 50%)
+    );
+}
+
+/* Styling for the thumb (slider handle) - WebKit browsers */
+.controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 25px;
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+/* Styling for the thumb (slider handle) - Firefox */
+.controls input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 25px;
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    border: none; /* Firefox adds a border by default */
+}
+
+.site-title {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font */
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* About Section Styling */
+#about {
+    padding: 100px 50px; /* Add significant padding */
+    min-height: 50vh; /* Ensure it takes up some space */
+    background-color: var(--section-bg, var(--bg-color)); /* Use specific or fallback to body bg */
+    color: var(--text-color);
+    text-align: center; /* Center content for now */
+}
+
+#about h2 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+#about p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto 20px auto; /* Center paragraph block */
+}
+
+/* Blog Section Styling */
+#blog {
+    padding: 60px 50px; /* Consistent padding */
+    background-color: var(--section-bg, var(--bg-color));
+    color: var(--text-color);
+    text-align: center;
+}
+
+#blog h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.blog-previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto; /* Center the grid */
+}
+
+.blog-preview-box {
+    background-color: var(--bg-color); /* Use body background, or a slightly different shade if defined */
+    border: 1px solid var(--slider-track-bg); /* Use a subtle border color */
+    padding: 25px;
+    border-radius: 8px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text-color);
+}
+
+.blog-preview-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.blog-preview-box h3 {
+    font-size: 1.5em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color); /* Ensure heading color matches theme */
+}
+
+.blog-preview-box p {
+    font-size: 1em;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.blog-preview-box .read-more {
+    text-decoration: none;
+    color: #00ffff; /* Cyan, matching wave hover */
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.blog-preview-box .read-more:hover {
+    color: var(--text-color); /* Change to main text color on hover */
+}
+
+.post-meta-preview {
+    font-size: 0.8em;
+    color: var(--text-color); /* Or a slightly more muted color if preferred */
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+/* Resume/CV Section Styling */
+#resume {
+    padding: 60px 50px;
+    background-color: var(--section-bg, var(--bg-color));
+    color: var(--text-color);
+    text-align: center;
+}
+
+#resume h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.document-previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 900px; /* Adjusted max-width for potentially two items */
+    margin: 0 auto;
+}
+
+.document-preview-box {
+    background-color: var(--bg-color);
+    border: 1px solid var(--slider-track-bg);
+    padding: 25px;
+    border-radius: 8px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text-color);
+}
+
+.document-preview-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.document-preview-box h3 {
+    font-size: 1.5em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.document-preview-box p {
+    font-size: 1em;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.document-preview-box .read-more {
+    text-decoration: none;
+    color: #00ffff;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    display: inline-block; /* Allows for better spacing/padding if needed */
+    padding: 8px 15px;
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+}
+
+.document-preview-box .read-more:hover {
+    color: var(--bg-color);
+    background-color: #00ffff;
+}
+
+/* Contact Section Styling */
+#contact {
+    padding: 60px 50px;
+    background-color: var(--bg-color); /* Match main background or a subtle variation */
+    color: var(--text-color);
+    text-align: center;
+}
+
+#contact h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px; /* Spacing between icons */
+}
+
+.social-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 28px; /* Adjust for icon size */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover {
+    color: #00ffff; /* Highlight color on hover */
+    transform: scale(1.1);
+}
+
+.social-link img {
+    width: 40px; /* Desired icon width */
+    height: 40px; /* Desired icon height */
+    display: block; /* Remove extra space under img if any */
+}
+
+/* Basic placeholder styling - replace with actual icons */
+/* .icon-placeholder { ... } // This can be removed or commented out */
+
+/* .social-link:hover .icon-placeholder { ... } // This can be removed or commented out */ 
