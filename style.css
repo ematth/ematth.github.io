@@ -166,6 +166,10 @@ nav a:hover {
     color: var(--text-color);
 }
 
+.site-title-link {
+    text-decoration: none;
+}
+
 /* About Section Styling */
 #about {
     padding: 100px 50px; /* Add significant padding */
@@ -187,6 +191,17 @@ nav a:hover {
     margin: 0 auto 20px auto; /* Center paragraph block */
 }
 
+.aboutme-image {
+    max-width: 300px; /* Adjust as needed */
+    width: 100%; /* Make it responsive within its container/max-width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 50%; /* Make it circular */
+    display: block;
+    margin: 0 auto 30px auto; /* Center it and add space below */
+    border: 3px solid var(--text-color); /* Optional border */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
 /* Blog Section Styling */
 #blog {
     padding: 60px 50px; /* Consistent padding */
@@ -198,6 +213,20 @@ nav a:hover {
 #blog h2 {
     font-size: 2.5em;
     margin-bottom: 40px;
+}
+
+.see-all-blogs-link {
+    display: block; /* Or inline-block */
+    text-align: center;
+    margin-bottom: 25px; /* Space before the preview boxes */
+    font-size: 1.1em;
+    color: #00ffff; /* Cyan to match other links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.see-all-blogs-link:hover {
+    color: var(--text-color);
 }
 
 .blog-previews {

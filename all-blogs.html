@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Blog Posts</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            overflow-y: auto;
+        }
+        .all-blogs-container {
+            max-width: 900px;
+            margin: 100px auto 40px auto;
+            padding: 30px;
+            background-color: var(--section-bg);
+            border-radius: 8px;
+            color: var(--text-color);
+        }
+        .all-blogs-container h1 {
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .blog-list-item {
+            background-color: var(--bg-color);
+            border: 1px solid var(--slider-track-bg);
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .blog-list-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        .blog-list-item h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .blog-list-item h3 a {
+            text-decoration: none;
+            color: var(--text-color); /* Or a more prominent link color like cyan */
+            font-size: 1.6em;
+        }
+        .blog-list-item h3 a:hover {
+            color: #00ffff;
+        }
+        .blog-list-item .post-meta {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        .blog-list-item .post-excerpt {
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body id="home">
+    <header>
+        <a href="index.html#home" class="site-title-link"><div class="site-title">Evan M. Matthews</div></a>
+        <nav>
+            <ul>
+                <li><a href="index.html#about">About Me</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="index.html#resume">Resume/CV</a></li>
+            </ul>
+        </nav>
+        <div id="themeToggle" title="Toggle light/dark mode">☀️</div>
+    </header>
+
+    <div class="all-blogs-container">
+        <h1>All Blog Posts</h1>
+        <div id="allBlogsList">
+            <!-- Blog posts will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const themeToggleButton = document.getElementById('themeToggle');
+        let isLightMode = localStorage.getItem('theme') === 'light';
+
+        function applyTheme(isLight) {
+            document.body.classList.toggle('light-mode', isLight);
+            themeToggleButton.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            isLightMode = !isLightMode;
+            applyTheme(isLightMode);
+        });
+        applyTheme(isLightMode); // Apply initial theme
+
+        async function fetchBlogSlugs() {
+            try {
+                const response = await fetch('blogs/manifest.json');
+                if (!response.ok) {
+                    console.error('Failed to fetch blog manifest:', response.statusText);
+                    return [];
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching or parsing blog manifest:', error);
+                return [];
+            }
+        }
+
+        async function fetchBlogData(slug) {
+            try {
+                const response = await fetch(`blogs/${slug}.md`);
+                if (!response.ok) {
+                    console.error(`Failed to fetch ${slug}.md: ${response.statusText}`);
+                    return null;
+                }
+                const markdown = await response.text();
+                const frontmatterMatch = markdown.match(/^---[\s\S]*?---/);
+                let content = markdown;
+                let title = slug.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                let date = 'N/A';
+
+                if (frontmatterMatch) {
+                    const frontmatterText = frontmatterMatch[0];
+                    content = markdown.substring(frontmatterText.length).trim();
+                    const titleMatch = frontmatterText.match(/^title:\s*(.*)$/m);
+                    if (titleMatch && titleMatch[1]) title = titleMatch[1].trim();
+                    const dateMatch = frontmatterText.match(/^date:\s*(.*)$/m);
+                    if (dateMatch && dateMatch[1]) date = dateMatch[1].trim();
+                }
+                
+                let excerpt = content.split('\n\n')[0];
+                if (excerpt.startsWith('#')) {
+                    const lines = content.split('\n');
+                    let firstParaIndex = lines.findIndex(line => line.trim() !== '' && !line.startsWith('#'));
+                    excerpt = lines.slice(firstParaIndex).join('\n').split('\n\n')[0] || '';
+                }
+                excerpt = excerpt.replace(/^[#\s*]+/gm, '');
+                if (excerpt.length > 200) excerpt = excerpt.substring(0, 200) + '...';
+                if (!excerpt) excerpt = "Continue reading...";
+
+                return { slug, title, date, excerpt };
+            } catch (error) {
+                console.error(`Error processing ${slug}.md:`, error);
+                return null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const allBlogsListContainer = document.getElementById('allBlogsList');
+            if (!allBlogsListContainer) return;
+
+            const slugs = await fetchBlogSlugs();
+            if (slugs.length === 0) {
+                allBlogsListContainer.innerHTML = '<p>No blog posts found. Check blogs/manifest.json.</p>';
+                return;
+            }
+
+            const allPostsData = [];
+            for (const slug of slugs) {
+                const postData = await fetchBlogData(slug);
+                if (postData) allPostsData.push(postData);
+            }
+
+            allPostsData.sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, recent first
+
+            if (allPostsData.length === 0) {
+                allBlogsListContainer.innerHTML = '<p>No blog posts available.</p>';
+                return;
+            }
+
+            let listHTML = '';
+            for (const post of allPostsData) {
+                listHTML += `
+                    <div class="blog-list-item">
+                        <h3><a href="blog-post.html?post=${post.slug}">${post.title}</a></h3>
+                        <p class="post-meta">Published on: ${post.date}</p>
+                        <p class="post-excerpt">${post.excerpt}</p>
+                    </div>
+                `;
+            }
+            allBlogsListContainer.innerHTML = listHTML;
+        });
+    </script>
+</body>
+</html> 
