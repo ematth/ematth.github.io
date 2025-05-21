@@ -115,7 +115,7 @@
 
             if (postFile) {
                 try {
-                    const response = await fetch(`blogs/${postFile}.md`);
+                    const response = await fetch(`blogs/${postFile}/index.md`);
                     if (!response.ok) {
                         throw new Error(`Could not load blog post: ${response.statusText}`);
                     }

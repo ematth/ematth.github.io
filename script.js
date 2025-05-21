@@ -276,9 +276,9 @@ async function fetchBlogSlugs() {
 
 async function fetchBlogData(slug) {
     try {
-        const response = await fetch(`blogs/${slug}.md`);
+        const response = await fetch(`blogs/${slug}/index.md`);
         if (!response.ok) {
-            console.error(`Failed to fetch ${slug}.md: ${response.statusText}`);
+            console.error(`Error fetching blog post ${slug}: ${response.statusText}`);
             return null;
         }
         const markdown = await response.text();
