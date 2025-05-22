@@ -69,11 +69,20 @@
         .blog-post-container a:hover {
             text-decoration: underline;
         }
+
+        /* Added for text wrapping */
+        .blog-post-container #postContent p,
+        .blog-post-container #postContent li,
+        .blog-post-container #postContent a {
+            overflow-wrap: break-word;
+            word-wrap: break-word; /* Older browsers */
+            word-break: break-word; /* Fallback if others don't catch all cases, can be aggressive */
+        }
     </style>
 </head>
 <body id="home"> <!-- ID for potential smooth scroll from header links -->
     <header>
-        <a href="index.html#home" class="site-title-link"><div class="site-title">Evan M. Matthews</div></a>
+        <a href="index.html#home" class="site-title-link"><div class="site-title">ematth.dev</div></a>
         <nav>
             <ul>
                 <li><a href="index.html#about">About Me</a></li>

@@ -105,6 +105,7 @@ window.addEventListener('resize', () => {
     height = canvas.height = window.innerHeight;
 });
 
+/*
 canvas.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
     mouseY = event.clientY;
@@ -127,6 +128,7 @@ window.addEventListener('mouseup', (event) => {
         isMouseDown = false;
     }
 });
+*/
 
 function animate() {
     requestAnimationFrame(animate);
@@ -198,18 +200,18 @@ function animate() {
             const distSqToFrozen_x0 = Math.pow(x_world_at_sx_start - frozenMouseX_world, 2);
             const frozenInfluenceFactor_x0 = Math.exp(-distSqToFrozen_x0 / (2 * influenceRadius));
             const frozenMouseY_world_displacement = (frozenMouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-            final_y_world_start = y_calc_target_y0 + frozenMouseY_world_displacement * frozenInfluenceFactor_x0 * CLICK_MOUSE_INFLUENCE;
+            // final_y_world_start = y_calc_target_y0 + frozenMouseY_world_displacement * frozenInfluenceFactor_x0 * CLICK_MOUSE_INFLUENCE;
         }
 
-        if (isMouseDown) { // Active drag (isWaveFrozen is false here due to mousedown logic)
-            const liveInfluenceFactor_x0 = Math.exp(-Math.pow(x_world_at_sx_start - mouseX_at_depth, 2) / (2 * influenceRadius));
-            const mouseY_world_displacement = (mouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-            final_y_world_start = y_calc_target_y0 + mouseY_world_displacement * liveInfluenceFactor_x0 * CLICK_MOUSE_INFLUENCE;
-        } else { // Hovering (potentially on top of a frozen wave)
-            const liveInfluenceFactor_x0 = Math.exp(-Math.pow(x_world_at_sx_start - mouseX_at_depth, 2) / (2 * influenceRadius));
-            const bumpDisplacement_x0 = HOVER_BUMP_AMPLITUDE * liveInfluenceFactor_x0;
-            final_y_world_start += bumpDisplacement_x0;
-        }
+        // if (isMouseDown) { // Active drag (isWaveFrozen is false here due to mousedown logic)
+        //     const liveInfluenceFactor_x0 = Math.exp(-Math.pow(x_world_at_sx_start - mouseX_at_depth, 2) / (2 * influenceRadius));
+        //     const mouseY_world_displacement = (mouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
+        //     final_y_world_start = y_calc_target_y0 + mouseY_world_displacement * liveInfluenceFactor_x0 * CLICK_MOUSE_INFLUENCE;
+        // } else { // Hovering (potentially on top of a frozen wave)
+        //     const liveInfluenceFactor_x0 = Math.exp(-Math.pow(x_world_at_sx_start - mouseX_at_depth, 2) / (2 * influenceRadius));
+        //     const bumpDisplacement_x0 = HOVER_BUMP_AMPLITUDE * liveInfluenceFactor_x0;
+        //     final_y_world_start += bumpDisplacement_x0;
+        // }
         y_world_start = final_y_world_start;
 
         let screenY_start = y_world_start * perspectiveScale + screenY_center_offset;
@@ -233,18 +235,18 @@ function animate() {
                 const distSqToFrozen = Math.pow(x_world - frozenMouseX_world, 2); 
                 const frozenInfluenceFactor = Math.exp(-distSqToFrozen / (2 * influenceRadius));
                 const frozenMouseY_world_displacement = (frozenMouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-                final_y_world = y_calc_target_y + frozenMouseY_world_displacement * frozenInfluenceFactor * CLICK_MOUSE_INFLUENCE;
+                // final_y_world = y_calc_target_y + frozenMouseY_world_displacement * frozenInfluenceFactor * CLICK_MOUSE_INFLUENCE;
             }
 
-            if (isMouseDown) { // Active drag
-                const liveInfluenceFactor = Math.exp(-Math.pow(x_world - mouseX_at_depth, 2) / (2 * influenceRadius));
-                const mouseY_world_displacement = (mouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-                final_y_world = y_calc_target_y + mouseY_world_displacement * liveInfluenceFactor * CLICK_MOUSE_INFLUENCE;
-            } else { // Hovering
-                const liveInfluenceFactor = Math.exp(-Math.pow(x_world - mouseX_at_depth, 2) / (2 * influenceRadius));
-                const bumpDisplacement = HOVER_BUMP_AMPLITUDE * liveInfluenceFactor;
-                final_y_world += bumpDisplacement;
-            }
+            // if (isMouseDown) { // Active drag
+            //     const liveInfluenceFactor = Math.exp(-Math.pow(x_world - mouseX_at_depth, 2) / (2 * influenceRadius));
+            //     const mouseY_world_displacement = (mouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
+            //     final_y_world = y_calc_target_y + mouseY_world_displacement * liveInfluenceFactor * CLICK_MOUSE_INFLUENCE;
+            // } else { // Hovering
+            //     const liveInfluenceFactor = Math.exp(-Math.pow(x_world - mouseX_at_depth, 2) / (2 * influenceRadius));
+            //     const bumpDisplacement = HOVER_BUMP_AMPLITUDE * liveInfluenceFactor;
+            //     final_y_world += bumpDisplacement;
+            // }
             y_world = final_y_world;
 
             // Project to screen space
