@@ -20,6 +20,7 @@ body {
     --slider-track-bg: #555;
     --icon-color: #fff;
     --section-bg: #1a1a1a; /* Slightly different for sections in dark mode */
+    --content-link-color: #00ffff; /* Standard cyan for dark mode */
 }
 
 body.light-mode {
@@ -31,6 +32,7 @@ body.light-mode {
     --slider-track-bg: #ccc;
     --icon-color: #333;
     --section-bg: #fff; /* White for sections in light mode */
+    --content-link-color: #008b8b; /* Darker cyan for light mode (DarkCyan) */
 }
 
 canvas {
@@ -318,7 +320,7 @@ nav a:hover {
 /* General Content Link Styling */
 /* Targets links within paragraphs in the #about section specifically */
 #about p a {
-    color: #00ffff; /* Cyan */
+    color: var(--content-link-color); /* Use CSS variable */
     text-decoration: none;
     transition: color 0.3s ease;
 }
