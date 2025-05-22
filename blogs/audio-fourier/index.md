@@ -1,13 +1,7 @@
 ---
-title: 'Fourier Transform'
-date: '2023-07-04'
-tags:
-  - Mathematics
-  - Signal Processing
-  - Audio
+title: Fourier Transform
+date: 2023-07-04
 ---
-
-# Fourier Transform
 
 The **Fourier Transform** is a transformation of a time-series function which returns a respective frequency-series function, or an equivalent function who takes a frequency $f$ as an input rather than a time $t$
 
