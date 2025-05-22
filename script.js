@@ -289,9 +289,9 @@ let noiseLinesDepthRange = 1;
 let currentSmoothness = 0.1; // Default smoothness (slider range 10-200 maps to 0.01-0.2 for noise function)
 
 // Dynamic Line Parameters
-const targetVisualDepth = 40; // Total depth covered by lines
-const minDynamicLines = 80;   // Lines at min smoothness/detail
-const maxDynamicLines = 300;  // Lines at max smoothness/detail
+const targetVisualDepth = 70; // Total depth covered by lines (Increased from 40)
+const minDynamicLines = 120;  // Lines at min smoothness/detail (Increased from 80)
+const maxDynamicLines = 450;  // Lines at max smoothness/detail (Increased from 300)
 
 // Store event handlers for cleanup
 let hueSliderChangeHandler;
