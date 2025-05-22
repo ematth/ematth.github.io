@@ -268,9 +268,115 @@ async function displayProjectPreviews() {
 let noiseScene, noiseRenderer, noiseCamera, noiseLines = [];
 let noiseAnimationId;
 let noiseStartTime = Date.now();
-let noiseRotation = 0; // Variable to control plane rotation (in radians)
+
+// --- Control Variables ---
+let noiseRotation = 80; // Variable to control plane rotation (in radians)
 let autoRotate = true; // Set to false to disable automatic rotation
 let autoRotateSpeed = 0.0005; // Speed of automatic rotation (radians per frame)
+
+// Color and Theme Variables
+let targetBackgroundColor = new THREE.Color(0x0a0a0a);
+// let targetLineColor = new THREE.Color(0x00ffff); // No longer needed globally for lines
+let colorTransitionSpeed = 0.02; // Lower = slower transition
+let currentHue = 180; // Default cyan hue (180 degrees)
+
+// Z-Depth variables for gradient
+let noiseLinesMinZ = 0;
+let noiseLinesMaxZ = 0;
+let noiseLinesDepthRange = 1;
+
+// Noise Property Variables
+let currentSmoothness = 0.1; // Default smoothness (slider range 10-200 maps to 0.01-0.2 for noise function)
+
+// Dynamic Line Parameters
+const targetVisualDepth = 40; // Total depth covered by lines
+const minDynamicLines = 80;   // Lines at min smoothness/detail
+const maxDynamicLines = 300;  // Lines at max smoothness/detail
+
+// Store event handlers for cleanup
+let hueSliderChangeHandler;
+let smoothnessSliderChangeHandler;
+
+function rebuildNoiseLines(smoothnessValueForMapping) {
+    if (!noiseScene || !noiseLines.group) return;
+
+    // Clear existing lines from the group and the array
+    while (noiseLines.group.children.length > 0) {
+        const lineObj = noiseLines.group.children[0];
+        noiseLines.group.remove(lineObj);
+        if (lineObj.geometry) lineObj.geometry.dispose();
+        if (lineObj.material) lineObj.material.dispose();
+    }
+    noiseLines.length = 0; // Clear the tracking array
+
+    const minSliderVal = 10;
+    const maxSliderVal = 200;
+    const normalizedSlider = Math.max(0, Math.min(1, (smoothnessValueForMapping - minSliderVal) / (maxSliderVal - minSliderVal)));
+    const numLinesDynamic = Math.floor(minDynamicLines + normalizedSlider * (maxDynamicLines - minDynamicLines));
+    
+    const lineLength = 100;
+    const pointsPerLine = 500;
+
+    // Pass 1: Calculate all Z positions to determine their range for initial coloring
+    const tempZValues = [];
+    for (let i = 0; i < numLinesDynamic; i++) {
+        const z = (i / (numLinesDynamic > 1 ? numLinesDynamic - 1 : 1) - 0.5) * targetVisualDepth;
+        tempZValues.push(z);
+    }
+
+    let currentMinZ = 0, currentMaxZ = 0, currentDepthRange = 1;
+    if (tempZValues.length > 0) {
+        currentMinZ = Math.min(...tempZValues);
+        currentMaxZ = Math.max(...tempZValues);
+        currentDepthRange = currentMaxZ - currentMinZ;
+        if (currentDepthRange === 0) currentDepthRange = 1;
+    }
+
+    // Prepare for color calculation (mirroring parts of updateNoiseColors)
+    const isLight = document.body.classList.contains('light-mode');
+    const baseSaturation = isLight ? 0.6 : 1.0;
+    const baseLightness = 0.5; // User set this to 0.5
+
+    // Pass 2: Create lines and set their initial material color
+    for (let i = 0; i < numLinesDynamic; i++) {
+        const z = tempZValues[i];
+        const points = [];
+        for (let j = 0; j < pointsPerLine; j++) {
+            const x = (j / (pointsPerLine - 1) - 0.5) * lineLength;
+            points.push(new THREE.Vector3(x, 0, z));
+        }
+
+        const normalizedZ = (z - currentMinZ) / currentDepthRange;
+        let initialLineColorResult = new THREE.Color();
+        const hslColorComponent = new THREE.Color();
+
+        if (isLight) {
+            const targetL = baseLightness * (0.5 + (1 - normalizedZ) * 0.5);
+            const targetS = baseSaturation * (0.7 + (1 - normalizedZ) * 0.3);
+            hslColorComponent.setHSL(currentHue / 360, targetS, targetL);
+            initialLineColorResult.lerpColors(targetBackgroundColor, hslColorComponent, normalizedZ * 0.8 + 0.2);
+        } else { // Dark Mode
+            const targetL = baseLightness * (0.6 + normalizedZ * 0.4);
+            hslColorComponent.setHSL(currentHue / 360, baseSaturation, targetL);
+            initialLineColorResult.lerpColors(targetBackgroundColor, hslColorComponent, normalizedZ * 0.7 + 0.3);
+        }
+
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+        const lineMaterial = new THREE.LineBasicMaterial({
+            linewidth: 2,
+            color: initialLineColorResult // Set the calculated initial color
+        });
+
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        noiseLines.group.add(line);
+        noiseLines.push({ line, geometry: lineGeometry, points, z });
+    }
+
+    // Update global Z-range variables based on the newly created lines
+    noiseLinesMinZ = currentMinZ;
+    noiseLinesMaxZ = currentMaxZ;
+    noiseLinesDepthRange = currentDepthRange;
+}
 
 function initPerlinNoiseVisualization() {
     const canvas = document.getElementById('noiseCanvas');
@@ -304,36 +410,14 @@ function initPerlinNoiseVisualization() {
     const linesGroup = new THREE.Group();
     linesGroup.position.y = 7; // Shift the entire noise visualization up
     noiseScene.add(linesGroup);
+    noiseLines.group = linesGroup; // Assign group to noiseLines object for rebuildNoiseLines
 
-    // Create parallel lines for the noise visualization
-    const numLines = 200;
-    const lineLength = 100;
-    const lineSpacing = 0.5;
-    const pointsPerLine = 500;
+    // Initial call to build lines based on default slider value
+    // Need to get the slider, or pass its default value
+    const initialSmoothnessSliderValue = 100; // Default value of the smoothness slider
+    rebuildNoiseLines(initialSmoothnessSliderValue);
 
-    for (let i = 0; i < numLines; i++) {
-        const points = [];
-        const z = (i - numLines / 2) * lineSpacing;
-        
-        for (let j = 0; j < pointsPerLine; j++) {
-            const x = (j / (pointsPerLine - 1) - 0.5) * lineLength;
-            points.push(new THREE.Vector3(x, 0, z));
-        }
-
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-        const lineMaterial = new THREE.LineBasicMaterial({
-            color: 0x00ffff,
-            linewidth: 2
-        });
-
-        const line = new THREE.Line(lineGeometry, lineMaterial);
-        linesGroup.add(line);
-        noiseLines.push({ line, geometry: lineGeometry, points, z });
-    }
-
-    // Store reference to the group for rotation control
-    noiseLines.group = linesGroup;
-
+    // Calculate Z-depth range for gradient effect - MOVED to rebuildNoiseLines
     // Lighting
     const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
     noiseScene.add(ambientLight);
@@ -347,6 +431,7 @@ function initPerlinNoiseVisualization() {
 
     // Initialize hue slider
     initHueSlider();
+    initSmoothnessSlider();
 
     // Start animation
     animatePerlinNoise();
@@ -356,14 +441,37 @@ function initHueSlider() {
     const hueSlider = document.getElementById('hueSlider');
     if (!hueSlider) return;
 
-    // Set initial value
     hueSlider.value = currentHue;
 
-    // Add event listener for hue changes
-    hueSlider.addEventListener('input', (event) => {
+    hueSliderChangeHandler = (event) => {
         currentHue = parseFloat(event.target.value);
         updateNoiseHue();
-    });
+    };
+    hueSlider.addEventListener('input', hueSliderChangeHandler);
+}
+
+function initSmoothnessSlider() {
+    const smoothnessSlider = document.getElementById('smoothnessSlider');
+    if (!smoothnessSlider) return;
+
+    const mapSliderToSmoothnessFactor = (sliderVal) => {
+        const minSlider = 10;
+        const maxSlider = 200;
+        // This mapping is for the PerlinNoise.noise3 function scale factor
+        const minSmoothFactor = 0.25; 
+        const maxSmoothFactor = 0.75; 
+        return ((sliderVal - minSlider) / (maxSlider - minSlider)) * (maxSmoothFactor - minSmoothFactor) + minSmoothFactor;
+    };
+
+    currentSmoothness = mapSliderToSmoothnessFactor(parseFloat(smoothnessSlider.value));
+
+    smoothnessSliderChangeHandler = (event) => {
+        const sliderValue = parseFloat(event.target.value);
+        currentSmoothness = mapSliderToSmoothnessFactor(sliderValue);
+        rebuildNoiseLines(sliderValue); // Pass the raw slider value for line count mapping
+        updateNoiseColors(); // Immediately update colors for the new lines
+    };
+    smoothnessSlider.addEventListener('input', smoothnessSliderChangeHandler);
 }
 
 function onNoiseWindowResize() {
@@ -382,6 +490,7 @@ function updatePerlinNoise() {
     if (noiseLines.length === 0) return;
 
     const time = (Date.now() - noiseStartTime) * 0.0002; // Slow time progression
+    const smoothnessFactor = currentSmoothness; // Use the new variable
 
     // Update each line's Y coordinates using Perlin noise
     noiseLines.forEach(lineData => {
@@ -392,9 +501,9 @@ function updatePerlinNoise() {
             const x = points[i].x;
             
             // Generate height using 3D Perlin noise with time component
-            const height1 = PerlinNoise.noise3(x * 0.3, z * 0.3, time) * 4;
-            const height2 = PerlinNoise.noise3(x * 0.1, z * 0.1, time * 0.5) * 2;
-            const height3 = PerlinNoise.noise3(x * 0.6, z * 0.6, time * 2) * 1;
+            const height1 = PerlinNoise.noise3(x * smoothnessFactor * 0.3, z * smoothnessFactor * 0.3, time) * 4;
+            const height2 = PerlinNoise.noise3(x * smoothnessFactor * 0.1, z * smoothnessFactor * 0.1, time * 0.5) * 2;
+            const height3 = PerlinNoise.noise3(x * smoothnessFactor * 0.6, z * smoothnessFactor * 0.6, time * 2) * 1;
             
             const finalHeight = height1 + height2 + height3;
             
@@ -435,40 +544,59 @@ function toggleAutoRotation() {
     autoRotate = !autoRotate;
 }
 
-// Variables for smooth color transitions
-let targetBackgroundColor = new THREE.Color(0x0a0a0a);
-let targetLineColor = new THREE.Color(0x00ffff);
-let colorTransitionSpeed = 0.02; // Lower = slower transition
-let currentHue = 180; // Default cyan hue (180 degrees)
-
 function handleNoiseTheme() {
     if (!noiseScene) return;
-    updateNoiseHue();
+    // Set target background color based on theme
+    const isLight = document.body.classList.contains('light-mode');
+    targetBackgroundColor = new THREE.Color(isLight ? 0xf0f0f0 : 0x0a0a0a);
+    // updateNoiseHue(); // Call this to update line color logic if hue changes independently of theme
 }
 
 function updateNoiseHue() {
-    if (!noiseScene) return;
-    
-    // Set target colors based on theme and current hue
-    const isLight = document.body.classList.contains('light-mode');
-    targetBackgroundColor = new THREE.Color(isLight ? 0xf0f0f0 : 0x0a0a0a);
-    
-    // Create HSL color based on current hue
-    const saturation = isLight ? 60 : 100; // Lower saturation in light mode
-    const lightness = isLight ? 50 : 50;   // Consistent lightness
-    targetLineColor = new THREE.Color().setHSL(currentHue / 360, saturation / 100, lightness / 100);
+    // This function is now implicitly handled by updateNoiseColors when it recalculates line colors based on currentHue.
+    // If you need immediate color updates on hue slider change without waiting for the next animation frame,
+    // you might call a simplified version of the line color update here, or just let updateNoiseColors handle it.
 }
 
 function updateNoiseColors() {
-    if (!noiseScene) return;
-    
-    // Smoothly interpolate background color
+    if (!noiseScene || noiseLines.length === 0) return;
+
+    const isLight = document.body.classList.contains('light-mode');
     noiseScene.background.lerp(targetBackgroundColor, colorTransitionSpeed);
-    
-    // Smoothly interpolate line colors
+
+    const baseSaturation = isLight ? 0.6 : 1.0; // 60% in light, 100% in dark
+    const baseLightness = 0.5; // 50%
+
     noiseLines.forEach(lineData => {
         if (lineData.line && lineData.line.material) {
-            lineData.line.material.color.lerp(targetLineColor, colorTransitionSpeed);
+            const normalizedZ = (lineData.z - noiseLinesMinZ) / noiseLinesDepthRange;
+
+            let finalColor = new THREE.Color();
+            const currentLineColor = new THREE.Color();
+
+            if (isLight) {
+                // Light Mode: Farther lines are brighter (blend to light background), closer lines are darker.
+                // Closer lines (normalizedZ closer to 1) are darker.
+                // Farther lines (normalizedZ closer to 0) blend towards background.
+                const targetL = baseLightness * (0.5 + (1 - normalizedZ) * 0.5); // Darker for close, lighter for far
+                const targetS = baseSaturation * (0.7 + (1 - normalizedZ) * 0.3);
+                currentLineColor.setHSL(currentHue / 360, targetS, targetL);
+                
+                // Blend with background for distant lines
+                finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedZ * 0.8 + 0.2); // Stronger blend for far
+
+            } else {
+                // Dark Mode: Farther lines are darker (blend to dark background), closer lines are brighter.
+                // Closer lines (normalizedZ closer to 1) are brighter.
+                // Farther lines (normalizedZ closer to 0) blend towards background.
+                const targetL = baseLightness * (0.6 + normalizedZ * 0.4); // Brighter for close, dimmer for far
+                currentLineColor.setHSL(currentHue / 360, baseSaturation, targetL);
+
+                // Blend with background for distant lines
+                finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedZ * 0.7 + 0.3); // Stronger blend for far
+            }
+            
+            lineData.line.material.color.lerp(finalColor, colorTransitionSpeed * 2); // Faster lerp for individual lines
         }
     });
 }
@@ -481,11 +609,15 @@ function cleanupNoiseVisualization() {
         noiseRenderer.dispose();
     }
     window.removeEventListener('resize', onNoiseWindowResize);
-    
-    // Clean up hue slider event listener
+
     const hueSlider = document.getElementById('hueSlider');
-    if (hueSlider) {
-        hueSlider.removeEventListener('input', updateNoiseHue);
+    if (hueSlider && hueSliderChangeHandler) {
+        hueSlider.removeEventListener('input', hueSliderChangeHandler);
+    }
+
+    const smoothnessSlider = document.getElementById('smoothnessSlider');
+    if (smoothnessSlider && smoothnessSliderChangeHandler) {
+        smoothnessSlider.removeEventListener('input', smoothnessSliderChangeHandler);
     }
 }
 

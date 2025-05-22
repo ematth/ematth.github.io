@@ -268,6 +268,53 @@ nav a:hover {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+.smoothness-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.smoothness-control label {
+    color: var(--icon-color);
+    font-size: 20px;
+    cursor: default;
+    line-height: 1;
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.smoothness-control input[type="range"] {
+    width: 150px; /* Slightly narrower than hue, can be adjusted */
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: var(--slider-track-bg); /* Simple background for this one */
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.smoothness-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid #333;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.smoothness-control input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid #333;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
 /* About Section Styling */
 #about {
     padding: 100px 50px; /* Add significant padding */
