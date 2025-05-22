@@ -116,38 +116,16 @@
 
             if (postFile) {
                 try {
-                    // Try both possible paths for blog content
-                    const paths = [
-                        `blogs/${postFile}/index.md`,
-                        `content/note/${postFile}/index.md`
-                    ];
-                    
-                    let response = null;
-                    let markdown = null;
-                    let foundPath = null;
-
-                    for (const path of paths) {
-                        try {
-                            response = await fetch(path);
-                            if (response.ok) {
-                                markdown = await response.text();
-                                foundPath = path;
-                                break;
-                            }
-                        } catch (e) {
-                            // console.warn(`Failed to fetch from ${path}:`, e);
-                        }
+                    const response = await fetch(`blogs/${postFile}/index.md`);
+                    if (!response.ok) {
+                        throw new Error(`Could not load blog post: ${response.statusText}`);
                     }
-
-                    if (!markdown) {
-                        throw new Error(`Could not load blog post from tried paths: ${paths.join(', ')}`);
-                    }
+                    const markdown = await response.text();
                     
-                    // Enhanced frontmatter parsing (similar to all-blogs.html and script.js)
+                    // Basic frontmatter parsing
                     const frontmatterMatch = markdown.match(/^---[\s\S]*?---/);
                     let content = markdown;
-                    // Default title from filename (slug)
-                    let title = postFile.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); 
+                    let title = postFile.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); // Default title from filename
                     let date = 'N/A';
 
                     if (frontmatterMatch) {
@@ -155,15 +133,10 @@
                         content = markdown.substring(frontmatterText.length).trim();
                         
                         const titleMatch = frontmatterText.match(/^title:\s*(.*)$/m);
-                        if (titleMatch && titleMatch[1]) {
-                            title = titleMatch[1].trim().replace(/^["']|["']$/g, ''); // Remove quotes
-                        }
+                        if (titleMatch && titleMatch[1]) title = titleMatch[1].trim();
                         
                         const dateMatch = frontmatterText.match(/^date:\s*(.*)$/m);
-                        if (dateMatch && dateMatch[1]) {
-                            date = dateMatch[1].trim().replace(/^["']|["']$/g, ''); // Remove quotes
-                        }
-                        // Tags are not displayed on this page, so not explicitly parsed here, but could be if needed
+                        if (dateMatch && dateMatch[1]) date = dateMatch[1].trim();
                     }
                     
                     postTitleElem.textContent = title;

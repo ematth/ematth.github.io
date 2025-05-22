@@ -276,101 +276,46 @@ async function fetchBlogSlugs() {
 
 async function fetchBlogData(slug) {
     try {
-        console.log(`Fetching blog data for ${slug} in script.js...`);
-        // Try both possible paths for blog content
-        const paths = [
-            `blogs/${slug}/index.md`,
-            `content/note/${slug}/index.md` // Added for consistency with all-blogs.html
-        ];
-        
-        let response = null;
-        let markdown = null;
-        let foundPath = null;
-        
-        // Try each path until we find the content
-        for (const path of paths) {
-            try {
-                // console.log(`Trying path: ${path}`);
-                response = await fetch(path);
-                if (response.ok) {
-                    markdown = await response.text();
-                    foundPath = path;
-                    // console.log(`Successfully loaded content from ${path}`);
-                    break;
-                }
-            } catch (e) {
-                // console.warn(`Failed to fetch from ${path}:`, e);
-            }
-        }
-
-        if (!markdown) {
-            console.error(`Could not find blog content for ${slug} after trying paths:`, paths);
+        const response = await fetch(`blogs/${slug}/index.md`);
+        if (!response.ok) {
+            console.error(`Error fetching blog post ${slug}: ${response.statusText}`);
             return null;
         }
-        console.log(`Successfully loaded content for ${slug} from ${foundPath}`);
+        const markdown = await response.text();
 
-        // Basic frontmatter parsing (enhanced to match all-blogs.html)
+        // Basic frontmatter parsing
         const frontmatterMatch = markdown.match(/^---[\s\S]*?---/);
         let content = markdown;
         let title = slug.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); // Default title
         let date = 'N/A';
-        let tags = []; // Added for consistency
 
         if (frontmatterMatch) {
             const frontmatterText = frontmatterMatch[0];
             content = markdown.substring(frontmatterText.length).trim();
             
-            // Extract title (with quote removal)
             const titleMatch = frontmatterText.match(/^title:\s*(.*)$/m);
-            if (titleMatch && titleMatch[1]) {
-                title = titleMatch[1].trim().replace(/^["']|["']$/g, '');
-            }
+            if (titleMatch && titleMatch[1]) title = titleMatch[1].trim();
             
-            // Extract date (with quote removal)
             const dateMatch = frontmatterText.match(/^date:\s*(.*)$/m);
-            if (dateMatch && dateMatch[1]) {
-                date = dateMatch[1].trim().replace(/^["']|["']$/g, '');
-            }
-
-            // Extract tags (added for consistency)
-            const tagsMatch = frontmatterText.match(/^tags:\s*([\s\S]*?)(?:\n\w|$)/m);
-            if (tagsMatch && tagsMatch[1]) {
-                tags = tagsMatch[1]
-                    .split('\n')
-                    .map(tag => tag.trim().replace(/^-s*|["']/g, ''))
-                    .filter(tag => tag);
-            }
+            if (dateMatch && dateMatch[1]) date = dateMatch[1].trim();
         }
 
         // Generate a preview (e.g., first paragraph or first ~150 chars)
-        // This logic is similar to what was there, but uses the parsed 'content'
-        let preview = content.split('\n\n')[0]; 
-        if (preview.startsWith('#')) { 
+        let preview = content.split('\n\n')[0]; // Get first paragraph
+        if (preview.startsWith('#')) { // If first line is a heading, try next paragraph
              const lines = content.split('\n');
              let firstParaIndex = lines.findIndex(line => line.trim() !== '' && !line.startsWith('#'));
              preview = lines.slice(firstParaIndex).join('\n').split('\n\n')[0] || '';
         }
-        preview = preview.replace(/^[#\s*]+/gm, ''); 
+        preview = preview.replace(/^[#\s*]+/gm, ''); // Remove leading markdown like #, *, etc.
         if (preview.length > 150) {
             preview = preview.substring(0, 150) + '...';
         }
         if (!preview) preview = "Click to read more.";
 
-        return { 
-            slug, 
-            title, 
-            date, 
-            preview, 
-            tags, // Added tags
-            // For consistency with all-blogs.html, adding formattedDate if needed, though preview doesn't use it directly
-            formattedDate: new Date(date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }) 
-        };
+        return { slug, title, date, preview };
     } catch (error) {
-        console.error(`Error processing ${slug} in script.js:`, error);
+        console.error(`Error processing ${slug}.md:`, error);
         return null;
     }
 }
