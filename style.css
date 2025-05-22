@@ -7,7 +7,7 @@ body {
     /* overflow: hidden; */ /* Allow scrolling for sections */
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
@@ -36,7 +36,7 @@ body.light-mode {
 canvas {
     display: block; /* Remove extra space below canvas */
     background-color: var(--canvas-bg);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 header {
@@ -51,6 +51,7 @@ header {
     display: flex; /* For aligning nav and toggle */
     justify-content: space-between; /* Pushes nav and toggle apart */
     align-items: center;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 nav ul {
@@ -71,7 +72,7 @@ nav a {
     /* font-family: Arial, sans-serif; */ /* Replaced by body font stack */
     font-size: 16px;
     font-weight: bold;
-    transition: color 0.3s ease;
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 nav a:hover {
@@ -84,6 +85,7 @@ nav a:hover {
     padding: 5px 10px; /* Added some horizontal padding */
     color: var(--icon-color);
     margin-left: 20px; /* Space between nav and toggle if nav is not empty */
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .controls {
@@ -164,6 +166,7 @@ nav a:hover {
     font-size: 24px;
     font-weight: bold;
     color: var(--text-color);
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .site-title-link {
@@ -180,6 +183,7 @@ nav a:hover {
     align-items: center;
     min-height: 80vh;
     width: 100%;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .noise-container {
@@ -195,6 +199,75 @@ nav a:hover {
     display: block;
 }
 
+.noise-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    padding: 15px 25px;
+    background-color: var(--controls-bg);
+    border-radius: 8px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.hue-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hue-control label {
+    color: var(--icon-color);
+    font-size: 20px;
+    cursor: default;
+    line-height: 1;
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.hue-control input[type="range"] {
+    width: 200px;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-image: linear-gradient(to right, 
+        hsl(0, 100%, 50%), 
+        hsl(60, 100%, 50%), 
+        hsl(120, 100%, 50%), 
+        hsl(180, 100%, 50%), 
+        hsl(240, 100%, 50%), 
+        hsl(300, 100%, 50%), 
+        hsl(360, 100%, 50%)
+    );
+}
+
+.hue-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid #333;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hue-control input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid #333;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
 /* About Section Styling */
 #about {
     padding: 100px 50px; /* Add significant padding */
@@ -202,6 +275,7 @@ nav a:hover {
     background-color: var(--section-bg, var(--bg-color)); /* Use specific or fallback to body bg */
     color: var(--text-color);
     text-align: center; /* Center content for now */
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 #about h2 {
@@ -225,6 +299,7 @@ nav a:hover {
     margin: 0 auto 30px auto; /* Center it and add space below */
     border: 3px solid var(--text-color); /* Optional border */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 /* Blog Section Styling */
@@ -233,6 +308,7 @@ nav a:hover {
     background-color: var(--section-bg, var(--bg-color));
     color: var(--text-color);
     text-align: center;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 #blog h2 {
@@ -247,7 +323,7 @@ nav a:hover {
     font-size: 1.1em;
     color: #00ffff; /* Cyan to match other links */
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .see-all-blogs-link:hover {
@@ -268,7 +344,7 @@ nav a:hover {
     padding: 25px;
     border-radius: 8px;
     text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
     color: var(--text-color);
 }
 
@@ -294,7 +370,7 @@ nav a:hover {
     text-decoration: none;
     color: #00ffff; /* Cyan, matching wave hover */
     font-weight: bold;
-    transition: color 0.3s ease;
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .blog-preview-box .read-more:hover {
@@ -314,6 +390,7 @@ nav a:hover {
     background-color: var(--section-bg, var(--bg-color));
     color: var(--text-color);
     text-align: center;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 #projects h2 {
@@ -335,7 +412,7 @@ nav a:hover {
     padding: 25px;
     border-radius: 8px;
     text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
     color: var(--text-color);
 }
 
@@ -392,6 +469,7 @@ nav a:hover {
     background-color: var(--section-bg, var(--bg-color));
     color: var(--text-color);
     text-align: center;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 #resume h2 {
@@ -413,7 +491,7 @@ nav a:hover {
     padding: 25px;
     border-radius: 8px;
     text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
     color: var(--text-color);
 }
 
@@ -457,6 +535,7 @@ nav a:hover {
     background-color: var(--bg-color); /* Match main background or a subtle variation */
     color: var(--text-color);
     text-align: center;
+    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 #contact h2 {

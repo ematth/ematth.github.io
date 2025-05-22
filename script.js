@@ -291,8 +291,8 @@ function initPerlinNoiseVisualization() {
     // Camera setup - positioned above and at an angle, slightly off-center (fixed position)
     const aspect = width / height;
     noiseCamera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-    noiseCamera.position.set(5, 20, 15);
-    noiseCamera.lookAt(0, 0, 0);
+    noiseCamera.position.set(5, 22, 25); // Increased Z position to move camera farther away
+    noiseCamera.lookAt(0, 0, 0); // Keep looking at the origin to center the noise
 
     // Renderer setup
     noiseRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
@@ -302,13 +302,14 @@ function initPerlinNoiseVisualization() {
 
     // Create a group to hold all lines for easy rotation
     const linesGroup = new THREE.Group();
+    linesGroup.position.y = 7; // Shift the entire noise visualization up
     noiseScene.add(linesGroup);
 
     // Create parallel lines for the noise visualization
-    const numLines = 50;
-    const lineLength = 30;
-    const lineSpacing = 0.6;
-    const pointsPerLine = 100;
+    const numLines = 200;
+    const lineLength = 100;
+    const lineSpacing = 0.5;
+    const pointsPerLine = 500;
 
     for (let i = 0; i < numLines; i++) {
         const points = [];
@@ -344,8 +345,25 @@ function initPerlinNoiseVisualization() {
     // Handle window resize
     window.addEventListener('resize', onNoiseWindowResize);
 
+    // Initialize hue slider
+    initHueSlider();
+
     // Start animation
     animatePerlinNoise();
+}
+
+function initHueSlider() {
+    const hueSlider = document.getElementById('hueSlider');
+    if (!hueSlider) return;
+
+    // Set initial value
+    hueSlider.value = currentHue;
+
+    // Add event listener for hue changes
+    hueSlider.addEventListener('input', (event) => {
+        currentHue = parseFloat(event.target.value);
+        updateNoiseHue();
+    });
 }
 
 function onNoiseWindowResize() {
@@ -392,6 +410,7 @@ function animatePerlinNoise() {
     noiseAnimationId = requestAnimationFrame(animatePerlinNoise);
     
     updatePerlinNoise();
+    updateNoiseColors(); // Add smooth color transitions
     
     // Handle automatic rotation
     if (autoRotate) {
@@ -416,18 +435,40 @@ function toggleAutoRotation() {
     autoRotate = !autoRotate;
 }
 
+// Variables for smooth color transitions
+let targetBackgroundColor = new THREE.Color(0x0a0a0a);
+let targetLineColor = new THREE.Color(0x00ffff);
+let colorTransitionSpeed = 0.02; // Lower = slower transition
+let currentHue = 180; // Default cyan hue (180 degrees)
+
 function handleNoiseTheme() {
     if (!noiseScene) return;
+    updateNoiseHue();
+}
+
+function updateNoiseHue() {
+    if (!noiseScene) return;
     
-    // Update background color based on theme
+    // Set target colors based on theme and current hue
     const isLight = document.body.classList.contains('light-mode');
-    noiseScene.background = new THREE.Color(isLight ? 0xf0f0f0 : 0x0a0a0a);
+    targetBackgroundColor = new THREE.Color(isLight ? 0xf0f0f0 : 0x0a0a0a);
     
-    // Update line colors
-    const lineColor = isLight ? 0x0066cc : 0x00ffff;
+    // Create HSL color based on current hue
+    const saturation = isLight ? 60 : 100; // Lower saturation in light mode
+    const lightness = isLight ? 50 : 50;   // Consistent lightness
+    targetLineColor = new THREE.Color().setHSL(currentHue / 360, saturation / 100, lightness / 100);
+}
+
+function updateNoiseColors() {
+    if (!noiseScene) return;
+    
+    // Smoothly interpolate background color
+    noiseScene.background.lerp(targetBackgroundColor, colorTransitionSpeed);
+    
+    // Smoothly interpolate line colors
     noiseLines.forEach(lineData => {
         if (lineData.line && lineData.line.material) {
-            lineData.line.material.color.setHex(lineColor);
+            lineData.line.material.color.lerp(targetLineColor, colorTransitionSpeed);
         }
     });
 }
@@ -440,6 +481,12 @@ function cleanupNoiseVisualization() {
         noiseRenderer.dispose();
     }
     window.removeEventListener('resize', onNoiseWindowResize);
+    
+    // Clean up hue slider event listener
+    const hueSlider = document.getElementById('hueSlider');
+    if (hueSlider) {
+        hueSlider.removeEventListener('input', updateNoiseHue);
+    }
 }
 
 // --- END: 3D Perlin Noise Visualization ---
@@ -462,4 +509,15 @@ window.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.project-previews')) {
         displayProjectPreviews();
     }
+
+    // Set rotation manually (in degrees for convenience)
+    setNoiseRotation(60); // Rotates to 45 degrees
+
+    // Toggle automatic rotation on/off
+    toggleAutoRotation();
+
+    // Direct variable access
+    noiseRotation = Math.PI / 4; // Set to 45 degrees (π/4 radians)
+    autoRotate = false; // Disable automatic rotation
+    autoRotateSpeed = 0.001; // Make rotation faster
 }); 
