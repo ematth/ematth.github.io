@@ -283,6 +283,84 @@ nav a:hover {
     margin-bottom: 10px;
 }
 
+/* Projects Section Styling */
+#projects {
+    padding: 60px 50px; /* Consistent padding */
+    background-color: var(--section-bg, var(--bg-color));
+    color: var(--text-color);
+    text-align: center;
+}
+
+#projects h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.project-previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto; /* Center the grid */
+}
+
+.project-preview-box {
+    background-color: var(--bg-color); 
+    border: 1px solid var(--slider-track-bg);
+    padding: 25px;
+    border-radius: 8px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text-color);
+}
+
+.project-preview-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.project-preview-box h3 {
+    font-size: 1.5em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.project-preview-box p {
+    font-size: 1em;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.project-meta-preview {
+    font-size: 0.8em;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.project-links-preview {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.project-links-preview a, .project-link {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--slider-track-bg);
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.project-links-preview a:hover, .project-link:hover {
+    background-color: #00ffff;
+    color: #000;
+}
+
 /* Resume/CV Section Styling */
 #resume {
     padding: 60px 50px;

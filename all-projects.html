@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Projects</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            overflow-y: auto;
+        }
+        .all-projects-container {
+            max-width: 900px;
+            margin: 100px auto 40px auto;
+            padding: 30px;
+            background-color: var(--section-bg);
+            border-radius: 8px;
+            color: var(--text-color);
+        }
+        .all-projects-container h1 {
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .project-list-item {
+            background-color: var(--bg-color);
+            border: 1px solid var(--slider-track-bg);
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .project-list-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        .project-list-item h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .project-list-item h3 a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.6em;
+        }
+        .project-list-item h3 a:hover {
+            color: #00ffff;
+        }
+        .project-list-item .project-meta {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        .project-list-item .project-description {
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        .project-list-item .project-links {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+        }
+        .project-list-item .project-links a {
+            display: inline-block;
+            padding: 5px 12px;
+            background-color: var(--slider-track-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease;
+        }
+        .project-list-item .project-links a:hover {
+            background-color: #00ffff;
+            color: #000;
+        }
+    </style>
+</head>
+<body id="home">
+    <header>
+        <a href="index.html#home" class="site-title-link"><div class="site-title">Evan M. Matthews</div></a>
+        <nav>
+            <ul>
+                <li><a href="index.html#about">About Me</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#blog">Blog</a></li>
+                <li><a href="index.html#resume">Resume/CV</a></li>
+            </ul>
+        </nav>
+        <div id="themeToggle" title="Toggle light/dark mode">☀️</div>
+    </header>
+
+    <div class="all-projects-container">
+        <h1>All Projects</h1>
+        <div id="allProjectsList">
+            <!-- Projects will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const themeToggleButton = document.getElementById('themeToggle');
+        let isLightMode = localStorage.getItem('theme') === 'light';
+
+        function applyTheme(isLight) {
+            document.body.classList.toggle('light-mode', isLight);
+            themeToggleButton.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            isLightMode = !isLightMode;
+            applyTheme(isLightMode);
+        });
+        applyTheme(isLightMode); // Apply initial theme
+
+        // Load projects from JSON file
+        async function loadProjects() {
+            try {
+                const response = await fetch('projects/projects.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch projects data: ${response.statusText}`);
+                }
+                const projects = await response.json();
+                displayProjects(projects);
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                document.getElementById('allProjectsList').innerHTML = 
+                    '<p>Failed to load projects. Please try again later or check the projects/projects.json file.</p>';
+            }
+        }
+
+        function displayProjects(projects) {
+            const projectsContainer = document.getElementById('allProjectsList');
+            if (!projects || projects.length === 0) {
+                projectsContainer.innerHTML = '<p>No projects available at the moment.</p>';
+                return;
+            }
+
+            let projectsHTML = '';
+            for (const project of projects) {
+                let linksHTML = '';
+                if (project.links && project.links.length > 0) {
+                    for (const link of project.links) {
+                        linksHTML += `<a href="${link.url}" target="_blank">${link.text}</a>`;
+                    }
+                }
+
+                projectsHTML += `
+                    <div class="project-list-item" id="${project.id}">
+                        <h3><a>${project.title}</a></h3>
+                        <p class="project-meta"><strong>Year:</strong> ${project.year || 'N/A'}</p>
+                        ${project.technologies ? `<p class="project-meta"><strong>Technologies:</strong> ${project.technologies}</p>` : ''}
+                        ${project.advisors ? `<p class="project-meta"><strong>Advisor(s):</strong> ${project.advisors}</p>` : ''}
+                        ${project.collaborators ? `<p class="project-meta"><strong>Collaborator(s):</strong> ${project.collaborators}</p>` : ''}
+                        <p class="project-description">${project.description}</p>
+                        <div class="project-links">${linksHTML}</div>
+                    </div>
+                `;
+            }
+            projectsContainer.innerHTML = projectsHTML;
+        }
+
+        // Load projects when the page loads
+        document.addEventListener('DOMContentLoaded', loadProjects);
+    </script>
+</body>
+</html> 

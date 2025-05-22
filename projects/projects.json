@@ -1,0 +1,224 @@
+[
+  {
+    "id": "ms-thesis",
+    "title": "MS Thesis: Text-to-Audio Generation Improvement through Text Recaptioning",
+    "technologies": "",
+    "advisors": "Paris Smaragdis",
+    "year": "Present (in progress!)",
+    "description": "I am actively working on my thesis as part of the MS CS program at UIUC, for a deposit deadline of early May 2025.",
+    "links": [
+      {
+        "text": "Advisor Page",
+        "url": "https://paris.cs.illinois.edu"
+      }
+    ]
+  },
+  {
+    "id": "bayesian-grading",
+    "title": "A Case for Bayesian Grading",
+    "technologies": "Python, Jupyter Notebook",
+    "advisors": "Craig B. Zilles, Matthew West",
+    "collaborators": "Yuxuan Chen, Chenyan (Victor) Zhao",
+    "year": "May 2024",
+    "description": "Research project for CS 500: Topics in Computer Education Research. Simulating student grades as bayesian probabilities for analysis on trustworthiness. A combination of proctored (UIUC CBTF) and non-proctored scores were used in the simulation process. Accepted to SIGCSE Virtual 2024!",
+    "links": [
+      {
+        "text": "Paper",
+        "url": "https://doi.acm.org?doi=3649165.3703624"
+      },
+      {
+        "text": "SIGCSE Virtual",
+        "url": "https://sigcsevirtual.acm.org"
+      }
+    ]
+  },
+  {
+    "id": "optical-music-recognition",
+    "title": "Optical Music Recognition for LilyPond File Generation",
+    "technologies": "Python, Jupyter Notebook",
+    "advisors": "Svetlana Lazebnik",
+    "year": "May 2024",
+    "description": "Graduate project for CS 444: Machine Learning for Computer Vision. Analysis of state-of-the-art work in Optical Music Recognition (OMR) with respect to several digital music notation formats. LilyPond is deemed to be a reasonable format for use in OMR given its current structure and underlying functionality for batch exporting.",
+    "links": [
+      {
+        "text": "Paper",
+        "url": "/files/cs444-report.pdf"
+      },
+      {
+        "text": "Professor Page",
+        "url": "https://grainger.illinois.edu/about/directory/faculty/slazebni"
+      }
+    ]
+  },
+  {
+    "id": "nearest-neighbor-upsampling",
+    "title": "Nearest Neighbor Classification for Classical Image Upsampling",
+    "technologies": "Python, Jupyter Notebook",
+    "advisors": "Paris Smaragdis",
+    "collaborators": "Nic Prate",
+    "year": "November - December 2023",
+    "description": "Research project for CS 545: Machine Learning for Signal Processing. Explores the use of K-Nearest-Neighbors Interpolation for the purpose of image upsampling. Implementation expanded to include dynamic aspect ratio upsampling and selective upsampling to reduce computation time for images with solid-color regions.",
+    "links": [
+      {
+        "text": "GitHub",
+        "url": "https://github.com/ematth/KNN-Classical-Upsampling"
+      }
+    ]
+  },
+  {
+    "id": "personal-website",
+    "title": "Personal Website",
+    "technologies": "HTML, CSS, Markdown, Github Pages",
+    "advisors": "",
+    "year": "May 2023",
+    "description": "Built with Hugo and designed using the XMIN theme. Read more about my journey through web development here.",
+    "links": [
+      {
+        "text": "Hugo",
+        "url": "https://gohugo.io/"
+      },
+      {
+        "text": "XMIN",
+        "url": "https://xmin.yihui.org/"
+      }
+    ]
+  },
+  {
+    "id": "senior-capstone",
+    "title": "Senior Capstone: Transcribing Monophonic Audio with Deep-Learning Data",
+    "technologies": "MIDI/MusicXML, MuseScore, Python",
+    "advisors": "Zuofu Cheng",
+    "collaborators": "Kevin Zhou",
+    "year": "Spring 2023",
+    "description": "Combined senior capstone project with Kevin Zhou. Our main goal was to implement a machine-learning model for rudimentary conversion of raw audio recordings into readable sheet music. I created the database of examples to be recorded and handled the business side of the study, and Kevin put together the webapp SingSong for collecting recording data.",
+    "links": [
+      {
+        "text": "Website",
+        "url": "https://singsong.gatsbyjs.io/"
+      },
+      {
+        "text": "Presentation",
+        "url": "/files/capstone.pdf"
+      },
+      {
+        "text": "Advisor Page",
+        "url": "https://ece.illinois.edu/about/directory/faculty/zcheng1"
+      }
+    ]
+  },
+  {
+    "id": "absentea",
+    "title": "Absentea",
+    "technologies": "React.js, SQL",
+    "advisors": "",
+    "collaborators": "Majeed Akinlusi, Zeyang \"Hans\" Zhang, Kevin Zhou",
+    "year": "Spring 2022",
+    "description": "Final project for CS 411; database webapp designed for comparing schedules and absences between members of an organization or group. Inspiration taken from scheduling sites like When2meet and Doodle.",
+    "links": [
+      {
+        "text": "When2meet",
+        "url": "https://www.when2meet.com/"
+      },
+      {
+        "text": "Doodle",
+        "url": "https://doodle.com/en/"
+      }
+    ]
+  },
+  {
+    "id": "dissco",
+    "title": "DISSCO",
+    "technologies": "C++",
+    "advisors": "Sever Tipei",
+    "collaborators": "Tejus Kurdukar",
+    "year": "Fall 2021 - Spring 2022",
+    "description": "DISSCO, or Digital Instrument for Sound Synthesis and Composition, is a Linux-based program combining music composition and sound synthesis for the easier creation of stochastic and non-stochastic music.",
+    "links": [
+      {
+        "text": "GitHub",
+        "url": "https://github.com/tipei/DISSCO-2.0.2"
+      },
+      {
+        "text": "Website",
+        "url": "https://cmp.ischool.illinois.edu/software/dissco/index.php"
+      },
+      {
+        "text": "Director Page",
+        "url": "https://music.illinois.edu/people/profiles/sever-tipei/"
+      }
+    ]
+  },
+  {
+    "id": "disklavier-echo",
+    "title": "Disklavier Echo Effect",
+    "technologies": "Python, rtmidi, musx",
+    "advisors": "Heinrich Taube",
+    "year": "Fall 2021 - Spring 2022",
+    "description": "\"This is a course project for MUS 305 at the University of Illinois Champaign-Urbana, under the course direction of Dr. Heinrich Taube. This project aims to simulate an 'echo' effect on a Yamaha Disklavier piano, on up to 16 key simulatenously, with repetitions and diminishing of echo sound up to the performer. The program runs using the musx library and uses threading to run real-time outputs to a Yamaha Disklavier.\"",
+    "links": [
+      {
+        "text": "GitHub",
+        "url": "https://github.com/evanmm3/Disklavier-Echo-Effect"
+      },
+      {
+        "text": "rtmidi",
+        "url": "https://pypi.org/project/python-rtmidi/"
+      },
+      {
+        "text": "musx",
+        "url": "https://github.com/musx-admin/musx"
+      },
+      {
+        "text": "Director Page",
+        "url": "https://music.illinois.edu/people/profiles/heinrich-taube/"
+      }
+    ]
+  },
+  {
+    "id": "pan-lang",
+    "title": "Pan-Lang",
+    "technologies": "",
+    "advisors": "",
+    "collaborators": "Renzo Ledesma, Katie Saunders, Kevin Zhou",
+    "year": "Spring 2020",
+    "description": "Second prize winner at PYGHACK 2020: a food pantry webapp designed providing translated lists and descriptions to patrons of Champaign and Urbana-area foodbanks.",
+    "links": [
+      {
+        "text": "Website",
+        "url": "https://pan-lang.github.io/"
+      },
+      {
+        "text": "GitHub",
+        "url": "https://github.com/Pan-Lang/pan-lang.github.io"
+      },
+      {
+        "text": "Devpost",
+        "url": "https://devpost.com/software/pan-lang"
+      },
+      {
+        "text": "PYGHACK 2020",
+        "url": "https://pyghack2020.devpost.com/"
+      }
+    ]
+  },
+  {
+    "id": "spotigraph",
+    "title": "Spotigraph",
+    "technologies": "C++, Spotify API",
+    "advisors": "",
+    "collaborators": "Beth Fineberg, Cale Wolf, Kevin Zhou",
+    "year": "Fall 2020",
+    "description": "Final project for CS 225; makes use of graph traversal algorithms to find the kth degrees of a given Spotify artist.",
+    "links": []
+  },
+  {
+    "id": "warioware",
+    "title": "WarioWare!",
+    "technologies": "Java, Android Studio",
+    "advisors": "",
+    "collaborators": "Kevin Zhou",
+    "year": "November - December 2019",
+    "description": "Final project for CS 125: Intro to Computer Science, (now CS 124: Intro to Computer Science I). Android app consisting of several minigames in the style of Nintendo's WarioWare. Players are rewarded with coins which they can use to purchase trophies (Bitmojis of the CS 125 course staff). This app made the list of \"Impressive Projects\" at the CS 125 Final Project Fair.",
+    "links": []
+  }
+] 

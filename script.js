@@ -367,6 +367,57 @@ async function displayBlogPreviews() {
 
 // --- END: New Blog Preview Logic ---
 
+// --- START: Project Preview Logic ---
+
+async function displayProjectPreviews() {
+    const previewsContainer = document.querySelector('.project-previews');
+    if (!previewsContainer) {
+        console.error('Project previews container not found.');
+        return;
+    }
+
+    try {
+        // Load projects from the JSON file
+        const response = await fetch('projects/projects.json');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch projects data: ${response.statusText}`);
+        }
+        
+        const projectData = await response.json();
+        // Only display the first 3 projects on the main page
+        const projectsToShow = projectData.slice(0, 3);
+        
+        let previewsHTML = '';
+        for (const project of projectsToShow) {
+            let linksHTML = '';
+            if (project.links && project.links.length > 0) {
+                for (const link of project.links) {
+                    linksHTML += `<a href="${link.url}" target="_blank" class="project-link">${link.text}</a>`;
+                }
+            }
+
+            previewsHTML += `
+                <div class="project-preview-box">
+                    <h3>${project.title}</h3>
+                    ${project.year ? `<p class="project-meta-preview"><strong>Year:</strong> ${project.year}</p>` : ''}
+                    ${project.technologies ? `<p class="project-meta-preview"><strong>Technologies:</strong> ${project.technologies}</p>` : ''}
+                    ${project.advisors ? `<p class="project-meta-preview"><strong>Advisor(s):</strong> ${project.advisors}</p>` : ''}
+                    <p>${project.description.substring(0, 150)}${project.description.length > 150 ? '...' : ''}</p>
+                    <div class="project-links-preview">
+                        ${linksHTML}
+                    </div>
+                </div>
+            `;
+        }
+        previewsContainer.innerHTML = previewsHTML;
+    } catch (error) {
+        console.error('Error loading projects:', error);
+        previewsContainer.innerHTML = '<p>Failed to load projects. Please check the projects/projects.json file.</p>';
+    }
+}
+
+// --- END: Project Preview Logic ---
+
 window.addEventListener('DOMContentLoaded', () => {
     applyTheme(isLightMode); // Apply initial theme from blog-post.html, ensure it's here for index
     updateWaveformColor(); // Initialize color based on initial slider values
@@ -375,5 +426,10 @@ window.addEventListener('DOMContentLoaded', () => {
     // Load blog previews if on the main page
     if (document.querySelector('.blog-previews')) {
         displayBlogPreviews();
+    }
+    
+    // Load project previews if on the main page
+    if (document.querySelector('.project-previews')) {
+        displayProjectPreviews();
     }
 }); 
