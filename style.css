@@ -618,4 +618,25 @@ nav a:hover {
 /* Basic placeholder styling - replace with actual icons */
 /* .icon-placeholder { ... } // This can be removed or commented out */
 
-/* .social-link:hover .icon-placeholder { ... } // This can be removed or commented out */ 
+/* .social-link:hover .icon-placeholder { ... } // This can be removed or commented out */
+
+.perpendicular-toggle-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.perpendicular-toggle-control label {
+    color: var(--icon-color);
+    font-size: 20px;
+    cursor: pointer; /* Make label clickable for checkbox */
+    line-height: 1;
+    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.perpendicular-toggle-control input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #00ffff; /* Match other interactive elements */
+} 

@@ -265,7 +265,9 @@ async function displayProjectPreviews() {
 
 // --- START: 3D Perlin Noise Visualization ---
 
-let noiseScene, noiseRenderer, noiseCamera, noiseLines = [];
+let noiseScene, noiseRenderer, noiseCamera;
+let noiseLines = []; // Primary lines (along X, distributed on Z)
+let perpendicularNoiseLines = []; // Perpendicular lines (along Z, distributed on X)
 let noiseAnimationId;
 let noiseStartTime = Date.now();
 
@@ -280,102 +282,162 @@ let targetBackgroundColor = new THREE.Color(0x0a0a0a);
 let colorTransitionSpeed = 0.02; // Lower = slower transition
 let currentHue = 180; // Default cyan hue (180 degrees)
 
-// Z-Depth variables for gradient
+// Z-Depth variables for gradient (primary lines)
 let noiseLinesMinZ = 0;
 let noiseLinesMaxZ = 0;
 let noiseLinesDepthRange = 1;
 
-// Noise Property Variables
-let currentSmoothness = 0.1; // Default smoothness (slider range 10-200 maps to 0.01-0.2 for noise function)
+// X-Depth variables for gradient (perpendicular lines)
+let noiseLinesMinX = 0;
+let noiseLinesMaxX = 0;
+let noiseLinesXDepthRange = 1;
 
-// Dynamic Line Parameters
+// Noise Property Variables
+let currentSmoothness = 0.1;
+let showPerpendicularLines = false; // Toggle state
+
+// Dynamic Line Parameters (Primary)
 const targetVisualDepth = 70; // Total depth covered by lines (Increased from 40)
 const minDynamicLines = 120;  // Lines at min smoothness/detail (Increased from 80)
 const maxDynamicLines = 450;  // Lines at max smoothness/detail (Increased from 300)
 
+// Dynamic Line Parameters (Perpendicular)
+const targetVisualXDepth = 100; // Total width covered by perpendicular lines (matches primary lineLength)
+const minDynamicPerpendicularLines = 80;
+const maxDynamicPerpendicularLines = 300;
+
 // Store event handlers for cleanup
 let hueSliderChangeHandler;
 let smoothnessSliderChangeHandler;
+let perpendicularToggleChangeHandler;
 
 function rebuildNoiseLines(smoothnessValueForMapping) {
-    if (!noiseScene || !noiseLines.group) return;
+    if (!noiseScene || !noiseLines.group || !perpendicularNoiseLines.group) return;
 
-    // Clear existing lines from the group and the array
+    // --- Clear existing PRIMARY lines ---
     while (noiseLines.group.children.length > 0) {
         const lineObj = noiseLines.group.children[0];
         noiseLines.group.remove(lineObj);
         if (lineObj.geometry) lineObj.geometry.dispose();
         if (lineObj.material) lineObj.material.dispose();
     }
-    noiseLines.length = 0; // Clear the tracking array
+    noiseLines.length = 0;
 
+    // --- Clear existing PERPENDICULAR lines ---
+    while (perpendicularNoiseLines.group.children.length > 0) {
+        const lineObjP = perpendicularNoiseLines.group.children[0];
+        perpendicularNoiseLines.group.remove(lineObjP);
+        if (lineObjP.geometry) lineObjP.geometry.dispose();
+        if (lineObjP.material) lineObjP.material.dispose();
+    }
+    perpendicularNoiseLines.length = 0;
+
+    // Common slider mapping for number of lines
     const minSliderVal = 10;
     const maxSliderVal = 200;
     const normalizedSlider = Math.max(0, Math.min(1, (smoothnessValueForMapping - minSliderVal) / (maxSliderVal - minSliderVal)));
-    const numLinesDynamic = Math.floor(minDynamicLines + normalizedSlider * (maxDynamicLines - minDynamicLines));
+
+    // --- Create PRIMARY lines (along X, distributed on Z) ---
+    const numPrimaryLinesDynamic = Math.floor(minDynamicLines + normalizedSlider * (maxDynamicLines - minDynamicLines));
+    const primaryLineLength = 100; // X-extent of primary lines
+    const primaryPointsPerLine = 500;
     
-    const lineLength = 100;
-    const pointsPerLine = 500;
-
-    // Pass 1: Calculate all Z positions to determine their range for initial coloring
-    const tempZValues = [];
-    for (let i = 0; i < numLinesDynamic; i++) {
-        const z = (i / (numLinesDynamic > 1 ? numLinesDynamic - 1 : 1) - 0.5) * targetVisualDepth;
-        tempZValues.push(z);
+    const tempPrimaryZValues = [];
+    for (let i = 0; i < numPrimaryLinesDynamic; i++) {
+        const z = (i / (numPrimaryLinesDynamic > 1 ? numPrimaryLinesDynamic - 1 : 1) - 0.5) * targetVisualDepth;
+        tempPrimaryZValues.push(z);
     }
 
-    let currentMinZ = 0, currentMaxZ = 0, currentDepthRange = 1;
-    if (tempZValues.length > 0) {
-        currentMinZ = Math.min(...tempZValues);
-        currentMaxZ = Math.max(...tempZValues);
-        currentDepthRange = currentMaxZ - currentMinZ;
-        if (currentDepthRange === 0) currentDepthRange = 1;
+    let currentPrimaryMinZ = 0, currentPrimaryMaxZ = 0, currentPrimaryDepthRange = 1;
+    if (tempPrimaryZValues.length > 0) {
+        currentPrimaryMinZ = Math.min(...tempPrimaryZValues);
+        currentPrimaryMaxZ = Math.max(...tempPrimaryZValues);
+        currentPrimaryDepthRange = currentPrimaryMaxZ - currentPrimaryMinZ;
+        if (currentPrimaryDepthRange === 0) currentPrimaryDepthRange = 1;
     }
+    noiseLinesMinZ = currentPrimaryMinZ;
+    noiseLinesMaxZ = currentPrimaryMaxZ;
+    noiseLinesDepthRange = currentPrimaryDepthRange;
 
-    // Prepare for color calculation (mirroring parts of updateNoiseColors)
     const isLight = document.body.classList.contains('light-mode');
     const baseSaturation = isLight ? 0.6 : 1.0;
-    const baseLightness = 0.5; // User set this to 0.5
+    const baseLightness = 0.5;
 
-    // Pass 2: Create lines and set their initial material color
-    for (let i = 0; i < numLinesDynamic; i++) {
-        const z = tempZValues[i];
+    for (let i = 0; i < numPrimaryLinesDynamic; i++) {
+        const z = tempPrimaryZValues[i];
         const points = [];
-        for (let j = 0; j < pointsPerLine; j++) {
-            const x = (j / (pointsPerLine - 1) - 0.5) * lineLength;
+        for (let j = 0; j < primaryPointsPerLine; j++) {
+            const x = (j / (primaryPointsPerLine - 1) - 0.5) * primaryLineLength;
             points.push(new THREE.Vector3(x, 0, z));
         }
-
-        const normalizedZ = (z - currentMinZ) / currentDepthRange;
-        let initialLineColorResult = new THREE.Color();
-        const hslColorComponent = new THREE.Color();
-
-        if (isLight) {
+        const normalizedZ = (z - noiseLinesMinZ) / noiseLinesDepthRange;
+        let initialColor = new THREE.Color(); 
+        const hslComp = new THREE.Color();
+        if (isLight) { 
             const targetL = baseLightness * (0.5 + (1 - normalizedZ) * 0.5);
             const targetS = baseSaturation * (0.7 + (1 - normalizedZ) * 0.3);
-            hslColorComponent.setHSL(currentHue / 360, targetS, targetL);
-            initialLineColorResult.lerpColors(targetBackgroundColor, hslColorComponent, normalizedZ * 0.8 + 0.2);
+            hslComp.setHSL(currentHue / 360, targetS, targetL);
+            initialColor.lerpColors(targetBackgroundColor, hslComp, normalizedZ * 0.8 + 0.2);
         } else { // Dark Mode
             const targetL = baseLightness * (0.6 + normalizedZ * 0.4);
-            hslColorComponent.setHSL(currentHue / 360, baseSaturation, targetL);
-            initialLineColorResult.lerpColors(targetBackgroundColor, hslColorComponent, normalizedZ * 0.7 + 0.3);
+            hslComp.setHSL(currentHue / 360, baseSaturation, targetL);
+            initialColor.lerpColors(targetBackgroundColor, hslComp, normalizedZ * 0.7 + 0.3);
         }
-
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-        const lineMaterial = new THREE.LineBasicMaterial({
-            linewidth: 2,
-            color: initialLineColorResult // Set the calculated initial color
-        });
-
-        const line = new THREE.Line(lineGeometry, lineMaterial);
-        noiseLines.group.add(line);
-        noiseLines.push({ line, geometry: lineGeometry, points, z });
+        const geom = new THREE.BufferGeometry().setFromPoints(points); 
+        const mat = new THREE.LineBasicMaterial({linewidth:2, color:initialColor});
+        const line = new THREE.Line(geom,mat); 
+        noiseLines.group.add(line); 
+        noiseLines.push({line,geometry:geom,points,z});
     }
 
-    // Update global Z-range variables based on the newly created lines
-    noiseLinesMinZ = currentMinZ;
-    noiseLinesMaxZ = currentMaxZ;
-    noiseLinesDepthRange = currentDepthRange;
+    // --- Create PERPENDICULAR lines (along Z, distributed on X) IF toggled ON ---
+    if (showPerpendicularLines) {
+        const numPerpLinesDynamic = Math.floor(minDynamicPerpendicularLines + normalizedSlider * (maxDynamicPerpendicularLines - minDynamicPerpendicularLines));
+        const perpLineLength = targetVisualDepth; // Z-extent of perpendicular lines (matches primary visual depth)
+        const perpPointsPerLine = 500; // Or adjust if needed
+
+        const tempPerpXValues = [];
+        for (let i = 0; i < numPerpLinesDynamic; i++) {
+            const x = (i / (numPerpLinesDynamic > 1 ? numPerpLinesDynamic - 1 : 1) - 0.5) * targetVisualXDepth;
+            tempPerpXValues.push(x);
+        }
+        
+        let currentPerpMinX = 0, currentPerpMaxX = 0, currentPerpXDepthRange = 1;
+        if (tempPerpXValues.length > 0) {
+            currentPerpMinX = Math.min(...tempPerpXValues);
+            currentPerpMaxX = Math.max(...tempPerpXValues);
+            currentPerpXDepthRange = currentPerpMaxX - currentPerpMinX;
+            if (currentPerpXDepthRange === 0) currentPerpXDepthRange = 1;
+        }
+        noiseLinesMinX = currentPerpMinX;
+        noiseLinesMaxX = currentPerpMaxX;
+        noiseLinesXDepthRange = currentPerpXDepthRange;
+
+        for (let i = 0; i < numPerpLinesDynamic; i++) {
+            const x = tempPerpXValues[i];
+            const points = [];
+            for (let j = 0; j < perpPointsPerLine; j++) {
+                const z = (j / (perpPointsPerLine - 1) - 0.5) * perpLineLength;
+                points.push(new THREE.Vector3(x, 0, z)); // X is fixed, Z varies
+            }
+            const normalizedX = (x - noiseLinesMinX) / noiseLinesXDepthRange;
+            let initialColor = new THREE.Color(); const hslComp = new THREE.Color();
+            // Gradient based on X for perpendicular lines
+            if (isLight) {
+                hslComp.setHSL(currentHue / 360, baseSaturation * (0.7 + (1 - normalizedX) * 0.3), baseLightness * (0.5 + (1 - normalizedX) * 0.5));
+                initialColor.lerpColors(targetBackgroundColor, hslComp, normalizedX * 0.8 + 0.2);
+            } else {
+                hslComp.setHSL(currentHue / 360, baseSaturation, baseLightness * (0.6 + normalizedX * 0.4));
+                initialColor.lerpColors(targetBackgroundColor, hslComp, normalizedX * 0.7 + 0.3);
+            }
+            const geom = new THREE.BufferGeometry().setFromPoints(points); 
+            const mat = new THREE.LineBasicMaterial({linewidth:2, color:initialColor});
+            const line = new THREE.Line(geom,mat); 
+            perpendicularNoiseLines.group.add(line); 
+            perpendicularNoiseLines.push({line,geometry:geom,points,x}); // Store x instead of z
+        }
+    }
+    perpendicularNoiseLines.group.visible = showPerpendicularLines;
 }
 
 function initPerlinNoiseVisualization() {
@@ -410,10 +472,15 @@ function initPerlinNoiseVisualization() {
     const linesGroup = new THREE.Group();
     linesGroup.position.y = 7; // Shift the entire noise visualization up
     noiseScene.add(linesGroup);
-    noiseLines.group = linesGroup; // Assign group to noiseLines object for rebuildNoiseLines
+    noiseLines.group = linesGroup; // Assign group to noiseLines object
+
+    // Create a group for perpendicular lines
+    const perpLinesGroup = new THREE.Group();
+    perpLinesGroup.position.y = 7; // Match primary group's Y position
+    noiseScene.add(perpLinesGroup);
+    perpendicularNoiseLines.group = perpLinesGroup;
 
     // Initial call to build lines based on default slider value
-    // Need to get the slider, or pass its default value
     const initialSmoothnessSliderValue = 100; // Default value of the smoothness slider
     rebuildNoiseLines(initialSmoothnessSliderValue);
 
@@ -432,6 +499,7 @@ function initPerlinNoiseVisualization() {
     // Initialize hue slider
     initHueSlider();
     initSmoothnessSlider();
+    initPerpendicularToggle();
 
     // Start animation
     animatePerlinNoise();
@@ -474,6 +542,26 @@ function initSmoothnessSlider() {
     smoothnessSlider.addEventListener('input', smoothnessSliderChangeHandler);
 }
 
+function initPerpendicularToggle() {
+    const perpendicularToggle = document.getElementById('perpendicularToggle');
+    if (!perpendicularToggle) return;
+
+    perpendicularToggle.checked = showPerpendicularLines;
+
+    perpendicularToggleChangeHandler = (event) => {
+        showPerpendicularLines = event.target.checked;
+        // Need to pass the RAW slider value to rebuildNoiseLines
+        const smoothnessSlider = document.getElementById('smoothnessSlider');
+        let currentRawSliderValue = 100; // Default if slider not found
+        if (smoothnessSlider) {
+            currentRawSliderValue = parseFloat(smoothnessSlider.value);
+        }
+        rebuildNoiseLines(currentRawSliderValue); 
+        updateNoiseColors(); 
+    };
+    perpendicularToggle.addEventListener('change', perpendicularToggleChangeHandler);
+}
+
 function onNoiseWindowResize() {
     if (!noiseCamera || !noiseRenderer) return;
     
@@ -487,32 +575,41 @@ function onNoiseWindowResize() {
 }
 
 function updatePerlinNoise() {
-    if (noiseLines.length === 0) return;
+    if (noiseLines.length === 0 && (!showPerpendicularLines || perpendicularNoiseLines.length === 0)) return;
 
-    const time = (Date.now() - noiseStartTime) * 0.0002; // Slow time progression
-    const smoothnessFactor = currentSmoothness; // Use the new variable
+    const time = (Date.now() - noiseStartTime) * 0.0002;
+    const smoothnessFactor = currentSmoothness;
 
-    // Update each line's Y coordinates using Perlin noise
+    // Update PRIMARY lines
     noiseLines.forEach(lineData => {
         const { geometry, points, z } = lineData;
         const positions = geometry.attributes.position.array;
-
         for (let i = 0; i < points.length; i++) {
             const x = points[i].x;
-            
-            // Generate height using 3D Perlin noise with time component
-            const height1 = PerlinNoise.noise3(x * smoothnessFactor * 0.3, z * smoothnessFactor * 0.3, time) * 4;
-            const height2 = PerlinNoise.noise3(x * smoothnessFactor * 0.1, z * smoothnessFactor * 0.1, time * 0.5) * 2;
-            const height3 = PerlinNoise.noise3(x * smoothnessFactor * 0.6, z * smoothnessFactor * 0.6, time * 2) * 1;
-            
-            const finalHeight = height1 + height2 + height3;
-            
-            // Update Y coordinate (index * 3 + 1 is the Y coordinate)
-            positions[i * 3 + 1] = finalHeight;
+            const h1 = PerlinNoise.noise3(x * smoothnessFactor * 0.3, z * smoothnessFactor * 0.3, time) * 4;
+            const h2 = PerlinNoise.noise3(x * smoothnessFactor * 0.1, z * smoothnessFactor * 0.1, time * 0.5) * 2;
+            const h3 = PerlinNoise.noise3(x * smoothnessFactor * 0.6, z * smoothnessFactor * 0.6, time * 2) * 1;
+            positions[i * 3 + 1] = h1 + h2 + h3;
         }
-
         geometry.attributes.position.needsUpdate = true;
     });
+
+    // Update PERPENDICULAR lines (if visible)
+    if (showPerpendicularLines) {
+        perpendicularNoiseLines.forEach(lineData => {
+            const { geometry, points, x } = lineData; // Note: using x as the fixed axis
+            const positions = geometry.attributes.position.array;
+            for (let i = 0; i < points.length; i++) {
+                const z = points[i].z;
+                // Perlin noise: fixed X, varying Z, and time
+                const h1 = PerlinNoise.noise3(x * smoothnessFactor * 0.3, z * smoothnessFactor * 0.3, time) * 4;
+                const h2 = PerlinNoise.noise3(x * smoothnessFactor * 0.1, z * smoothnessFactor * 0.1, time * 0.5) * 2;
+                const h3 = PerlinNoise.noise3(x * smoothnessFactor * 0.6, z * smoothnessFactor * 0.6, time * 2) * 1;
+                positions[i * 3 + 1] = h1 + h2 + h3; // Y coordinate
+            }
+            geometry.attributes.position.needsUpdate = true;
+        });
+    }
 }
 
 function animatePerlinNoise() {
@@ -529,6 +626,9 @@ function animatePerlinNoise() {
     // Apply rotation to the lines group using the noiseRotation variable
     if (noiseLines.group) {
         noiseLines.group.rotation.y = noiseRotation;
+    }
+    if (perpendicularNoiseLines.group) {
+        perpendicularNoiseLines.group.rotation.y = noiseRotation;
     }
     
     noiseRenderer.render(noiseScene, noiseCamera);
@@ -559,46 +659,53 @@ function updateNoiseHue() {
 }
 
 function updateNoiseColors() {
-    if (!noiseScene || noiseLines.length === 0) return;
+    if (!noiseScene || (noiseLines.length === 0 && (!showPerpendicularLines || perpendicularNoiseLines.length === 0))) return;
 
     const isLight = document.body.classList.contains('light-mode');
     noiseScene.background.lerp(targetBackgroundColor, colorTransitionSpeed);
 
-    const baseSaturation = isLight ? 0.6 : 1.0; // 60% in light, 100% in dark
-    const baseLightness = 0.5; // 50%
+    const baseSaturation = isLight ? 0.6 : 1.0;
+    const baseLightness = 0.5;
 
+    // Color PRIMARY lines
     noiseLines.forEach(lineData => {
         if (lineData.line && lineData.line.material) {
             const normalizedZ = (lineData.z - noiseLinesMinZ) / noiseLinesDepthRange;
-
-            let finalColor = new THREE.Color();
-            const currentLineColor = new THREE.Color();
-
+            let finalColor = new THREE.Color(); const currentLineColor = new THREE.Color();
             if (isLight) {
-                // Light Mode: Farther lines are brighter (blend to light background), closer lines are darker.
-                // Closer lines (normalizedZ closer to 1) are darker.
-                // Farther lines (normalizedZ closer to 0) blend towards background.
-                const targetL = baseLightness * (0.5 + (1 - normalizedZ) * 0.5); // Darker for close, lighter for far
+                const targetL = baseLightness * (0.5 + (1 - normalizedZ) * 0.5);
                 const targetS = baseSaturation * (0.7 + (1 - normalizedZ) * 0.3);
                 currentLineColor.setHSL(currentHue / 360, targetS, targetL);
-                
-                // Blend with background for distant lines
-                finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedZ * 0.8 + 0.2); // Stronger blend for far
-
+                finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedZ * 0.8 + 0.2);
             } else {
-                // Dark Mode: Farther lines are darker (blend to dark background), closer lines are brighter.
-                // Closer lines (normalizedZ closer to 1) are brighter.
-                // Farther lines (normalizedZ closer to 0) blend towards background.
-                const targetL = baseLightness * (0.6 + normalizedZ * 0.4); // Brighter for close, dimmer for far
+                const targetL = baseLightness * (0.6 + normalizedZ * 0.4);
                 currentLineColor.setHSL(currentHue / 360, baseSaturation, targetL);
-
-                // Blend with background for distant lines
-                finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedZ * 0.7 + 0.3); // Stronger blend for far
+                finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedZ * 0.7 + 0.3);
             }
-            
-            lineData.line.material.color.lerp(finalColor, colorTransitionSpeed * 2); // Faster lerp for individual lines
+            lineData.line.material.color.lerp(finalColor, colorTransitionSpeed * 2);
         }
     });
+
+    // Color PERPENDICULAR lines (if visible)
+    if (showPerpendicularLines) {
+        perpendicularNoiseLines.forEach(lineData => {
+            if (lineData.line && lineData.line.material) {
+                const normalizedX = (lineData.x - noiseLinesMinX) / noiseLinesXDepthRange;
+                let finalColor = new THREE.Color(); const currentLineColor = new THREE.Color();
+                if (isLight) {
+                    const targetL = baseLightness * (0.5 + (1 - normalizedX) * 0.5);
+                    const targetS = baseSaturation * (0.7 + (1 - normalizedX) * 0.3);
+                    currentLineColor.setHSL(currentHue / 360, targetS, targetL);
+                    finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedX * 0.8 + 0.2);
+                } else {
+                    const targetL = baseLightness * (0.6 + normalizedX * 0.4);
+                    currentLineColor.setHSL(currentHue / 360, baseSaturation, targetL);
+                    finalColor.lerpColors(targetBackgroundColor, currentLineColor, normalizedX * 0.7 + 0.3);
+                }
+                lineData.line.material.color.lerp(finalColor, colorTransitionSpeed * 2);
+            }
+        });
+    }
 }
 
 function cleanupNoiseVisualization() {
@@ -618,6 +725,11 @@ function cleanupNoiseVisualization() {
     const smoothnessSlider = document.getElementById('smoothnessSlider');
     if (smoothnessSlider && smoothnessSliderChangeHandler) {
         smoothnessSlider.removeEventListener('input', smoothnessSliderChangeHandler);
+    }
+
+    const perpendicularToggle = document.getElementById('perpendicularToggle');
+    if (perpendicularToggle && perpendicularToggleChangeHandler) {
+        perpendicularToggle.removeEventListener('change', perpendicularToggleChangeHandler);
     }
 }
 
