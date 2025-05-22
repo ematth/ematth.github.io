@@ -174,7 +174,7 @@ async function displayBlogPreviews() {
 
     const blogPostSlugs = await fetchBlogSlugs(); // Fetch slugs dynamically
     if (blogPostSlugs.length === 0) {
-        previewsContainer.innerHTML = '<p>No blog posts found or manifest is empty. Please check blogs/manifest.json.</p>';
+        previewsContainer.innerHTML = '<p>No blog posts yet... check back soon!</p>';
         return;
     }
 

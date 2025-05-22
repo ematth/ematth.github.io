@@ -315,6 +315,19 @@ nav a:hover {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* General Content Link Styling */
+/* Targets links within paragraphs in the #about section specifically */
+#about p a {
+    color: #00ffff; /* Cyan */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#about p a:hover {
+    color: var(--text-color); /* Fallback to standard text color on hover */
+    /* text-decoration: underline; */ /* Optional: underline on hover for accessibility */
+}
+
 /* About Section Styling */
 #about {
     padding: 100px 50px; /* Add significant padding */
