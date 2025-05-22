@@ -40,7 +40,7 @@
         }
         .blog-list-item h3 a {
             text-decoration: none;
-            color: var(--text-color); /* Or a more prominent link color like cyan */
+            color: var(--text-color);
             font-size: 1.6em;
         }
         .blog-list-item h3 a:hover {
@@ -54,6 +54,41 @@
         .blog-list-item .post-excerpt {
             font-size: 0.95em;
             line-height: 1.6;
+        }
+        .post-tags {
+            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            background-color: var(--slider-track-bg);
+            color: var(--text-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            transition: background-color 0.2s ease;
+        }
+        .tag:hover {
+            background-color: var(--slider-thumb-bg);
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        .error-message {
+            background-color: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: var(--text-color);
+        }
+        .error-message p {
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -96,74 +131,170 @@
 
         async function fetchBlogSlugs() {
             try {
+                console.log('Fetching blog manifest...');
                 const response = await fetch('blogs/manifest.json');
                 if (!response.ok) {
-                    console.error('Failed to fetch blog manifest:', response.statusText);
-                    return [];
+                    throw new Error(`Failed to fetch blog manifest: ${response.statusText}`);
                 }
-                return await response.json();
+                const slugs = await response.json();
+                console.log('Fetched slugs:', slugs);
+                if (!Array.isArray(slugs)) {
+                    throw new Error('Blog manifest is not a valid array');
+                }
+                return slugs;
             } catch (error) {
-                console.error('Error fetching or parsing blog manifest:', error);
+                console.error('Error fetching blog manifest:', error);
+                document.getElementById('allBlogsList').innerHTML = `
+                    <div class="error-message">
+                        <p>Failed to load blog posts. Please try refreshing the page.</p>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
                 return [];
             }
         }
 
         async function fetchBlogData(slug) {
             try {
-                const response = await fetch(`blogs/${slug}/index.md`);
-                if (!response.ok) {
-                    console.error(`Failed to fetch ${slug}/index.md: ${response.statusText}`);
-                    return null;
+                console.log(`Fetching blog data for ${slug}...`);
+                // Try both possible paths for blog content
+                const paths = [
+                    `blogs/${slug}/index.md`,
+                    `content/note/${slug}/index.md`
+                ];
+                
+                let response = null;
+                let markdown = null;
+                
+                // Try each path until we find the content
+                for (const path of paths) {
+                    try {
+                        console.log(`Trying path: ${path}`);
+                        response = await fetch(path);
+                        if (response.ok) {
+                            markdown = await response.text();
+                            console.log(`Successfully loaded content from ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn(`Failed to fetch from ${path}:`, e);
+                    }
                 }
-                const markdown = await response.text();
+
+                if (!markdown) {
+                    throw new Error(`Could not find blog content for ${slug}`);
+                }
+
                 const frontmatterMatch = markdown.match(/^---[\s\S]*?---/);
+                console.log('Frontmatter match:', frontmatterMatch ? 'Found' : 'Not found');
+                
                 let content = markdown;
-                let title = slug.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                let title = slug.replace(/-/g, ' ').split(' ').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
                 let date = 'N/A';
+                let tags = [];
 
                 if (frontmatterMatch) {
                     const frontmatterText = frontmatterMatch[0];
                     content = markdown.substring(frontmatterText.length).trim();
+                    
+                    // Extract title
                     const titleMatch = frontmatterText.match(/^title:\s*(.*)$/m);
-                    if (titleMatch && titleMatch[1]) title = titleMatch[1].trim();
+                    if (titleMatch && titleMatch[1]) {
+                        title = titleMatch[1].trim().replace(/^["']|["']$/g, '');
+                        console.log('Extracted title:', title);
+                    }
+                    
+                    // Extract date
                     const dateMatch = frontmatterText.match(/^date:\s*(.*)$/m);
-                    if (dateMatch && dateMatch[1]) date = dateMatch[1].trim();
+                    if (dateMatch && dateMatch[1]) {
+                        date = dateMatch[1].trim().replace(/^["']|["']$/g, '');
+                        console.log('Extracted date:', date);
+                    }
+                    
+                    // Extract tags
+                    const tagsMatch = frontmatterText.match(/^tags:\s*([\s\S]*?)(?:\n\w|$)/m);
+                    if (tagsMatch && tagsMatch[1]) {
+                        tags = tagsMatch[1]
+                            .split('\n')
+                            .map(tag => tag.trim().replace(/^-\s*|["']/g, ''))
+                            .filter(tag => tag);
+                        console.log('Extracted tags:', tags);
+                    }
                 }
                 
+                // Generate excerpt
                 let excerpt = content.split('\n\n')[0];
                 if (excerpt.startsWith('#')) {
                     const lines = content.split('\n');
-                    let firstParaIndex = lines.findIndex(line => line.trim() !== '' && !line.startsWith('#'));
+                    let firstParaIndex = lines.findIndex(line => 
+                        line.trim() !== '' && !line.startsWith('#')
+                    );
                     excerpt = lines.slice(firstParaIndex).join('\n').split('\n\n')[0] || '';
                 }
                 excerpt = excerpt.replace(/^[#\s*]+/gm, '');
-                if (excerpt.length > 200) excerpt = excerpt.substring(0, 200) + '...';
-                if (!excerpt) excerpt = "Continue reading...";
+                if (excerpt.length > 200) {
+                    excerpt = excerpt.substring(0, 200) + '...';
+                }
+                if (!excerpt) {
+                    excerpt = "Continue reading...";
+                }
+                console.log('Generated excerpt:', excerpt.substring(0, 50) + '...');
 
-                return { slug, title, date, excerpt };
+                return { 
+                    slug, 
+                    title, 
+                    date, 
+                    excerpt,
+                    tags,
+                    formattedDate: new Date(date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })
+                };
             } catch (error) {
-                console.error(`Error processing ${slug}.md:`, error);
+                console.error(`Error processing ${slug}:`, error);
                 return null;
             }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('DOM Content Loaded - Starting blog load process');
             const allBlogsListContainer = document.getElementById('allBlogsList');
-            if (!allBlogsListContainer) return;
+            if (!allBlogsListContainer) {
+                console.error('Could not find allBlogsList container');
+                return;
+            }
+
+            // Show loading state
+            allBlogsListContainer.innerHTML = '<div class="loading">Loading blog posts...</div>';
 
             const slugs = await fetchBlogSlugs();
+            console.log('Fetched slugs:', slugs);
+            
             if (slugs.length === 0) {
-                allBlogsListContainer.innerHTML = '<p>No blog posts found. Check blogs/manifest.json.</p>';
+                allBlogsListContainer.innerHTML = '<p>No blog posts found. Please check the blog manifest file.</p>';
                 return;
             }
 
             const allPostsData = [];
             for (const slug of slugs) {
+                console.log(`Processing blog: ${slug}`);
                 const postData = await fetchBlogData(slug);
-                if (postData) allPostsData.push(postData);
+                if (postData) {
+                    console.log(`Successfully processed blog: ${slug}`);
+                    allPostsData.push(postData);
+                } else {
+                    console.warn(`Failed to process blog: ${slug}`);
+                }
             }
 
-            allPostsData.sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, recent first
+            console.log('All posts data:', allPostsData);
+
+            // Sort by date, most recent first
+            allPostsData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if (allPostsData.length === 0) {
                 allBlogsListContainer.innerHTML = '<p>No blog posts available.</p>';
@@ -172,15 +303,23 @@
 
             let listHTML = '';
             for (const post of allPostsData) {
+                const tagsHTML = post.tags.length > 0 
+                    ? `<div class="post-tags">${post.tags.map(tag => 
+                        `<span class="tag">${tag}</span>`
+                    ).join('')}</div>` 
+                    : '';
+
                 listHTML += `
                     <div class="blog-list-item">
                         <h3><a href="blog-post.html?post=${post.slug}">${post.title}</a></h3>
-                        <p class="post-meta">Published on: ${post.date}</p>
+                        <p class="post-meta">Published on: ${post.formattedDate}</p>
+                        ${tagsHTML}
                         <p class="post-excerpt">${post.excerpt}</p>
                     </div>
                 `;
             }
             allBlogsListContainer.innerHTML = listHTML;
+            console.log('Blog list rendering complete');
         });
     </script>
 </body>

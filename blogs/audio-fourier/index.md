@@ -1,11 +1,15 @@
 ---
-title: Fourier Transform
-date: 2023-07-04
+title: 'Fourier Transform'
+date: '2023-07-04'
+tags:
+  - Mathematics
+  - Signal Processing
+  - Audio
 ---
 
 # Fourier Transform
 
-<!-- The **Fourier Transform** is a transformation of a time-series function which returns a respective frequency-series function, or an equivalent function who takes a frequency $f$ as an input rather than a time $t$
+The **Fourier Transform** is a transformation of a time-series function which returns a respective frequency-series function, or an equivalent function who takes a frequency $f$ as an input rather than a time $t$
 
 $$\hat{f}(\xi) = \int_{-\infty}^{\infty} f(t) e^{-i2\pi\xi t} dt$$
 
@@ -37,4 +41,4 @@ The equation can be described like this: given a frequency $k$, $X_k$ returns th
     https://www.dsprelated.com/freebooks/sasp/Fourier_Transforms_Continuous_Discrete_Time_Frequency.html#chap:fourcases
 
 - Wikipedia: "Fourier Transform"
-    https://en.wikipedia.org/wiki/Fourier_transform  -->
+    https://en.wikipedia.org/wiki/Fourier_transform 
