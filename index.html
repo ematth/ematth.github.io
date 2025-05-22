@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body id="home">
     <header>
@@ -20,20 +21,13 @@
         <div id="themeToggle" title="Toggle light/dark mode">☀️</div>
     </header>
 
-    <div id="hero-section">
-        <canvas id="waveformCanvas"></canvas>
-        <div class="controls">
-            <div>
-                <label for="hue">🎨</label>
-                <input type="range" id="hue" class="hue-slider" min="0" max="360" value="180">
-            </div>
-            <div>
-                <label for="complexity">〰️</label>
-                <input type="range" id="complexity" min="0" max="200" value="50">
-            </div>
-        </div>
-    </div>
     <script src="script.js"></script>
+
+    <section id="noise-simulator">
+        <div class="noise-container">
+            <canvas id="noiseCanvas"></canvas>
+        </div>
+    </section>
 
     <section id="about">
         <h2>About Me</h2>

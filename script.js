@@ -1,72 +1,95 @@
-const canvas = document.getElementById('waveformCanvas');
-const ctx = canvas.getContext('2d');
+// Joseph Gentle - noisejs.github.io - MIT License
+// (Slightly modified to be self-contained and use a local p array)
+const PerlinNoise = (function() {
+    const p = new Uint8Array(512);
+    let permutation = [ 151,160,137,91,90,15,
+    131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
+    190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
+    88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
+    77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
+    102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
+    135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
+    5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
+    223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
+    129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
+    251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
+    49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
+    138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180 ];
 
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
+    function seed(val) {
+        if (val > 0 && val < 1) {
+            // Scale the seed out
+            val *= 65536;
+        }
 
-let mouseX = width / 2;
-let mouseY = height / 2;
+        val = Math.floor(val);
+        if (val < 256) {
+            val |= val << 8;
+        }
 
-let waveformColor = 'hsl(180, 100%, 50%)'; // Initial waveform color (cyan)
+        for (let i = 0; i < 256; i++) {
+            var v;
+            if (i & 1) {
+                v = permutation[i] ^ (val & 255);
+            } else {
+                v = permutation[i] ^ ((val >> 8) & 255);
+            }
+            p[i] = p[i + 256] = v;
+        }
+    }
 
-const hueSlider = document.getElementById('hue');
-// const speedSlider = document.getElementById('speed'); // Removed
-const complexitySlider = document.getElementById('complexity');
+    seed(0); // Default seed
+
+    function fade(t) { return t*t*t*(t*(t*6-15)+10); }
+    function lerp(t, a, b) { return a + t * (b - a); }
+
+    function grad(hash, x, y, z) {
+        var h = hash & 15;      // CONVERT LO 4 BITS OF HASH CODE
+        var u = h<8 ? x : y,    // INTO 12 GRADIENT DIRECTIONS.
+            v = h<4 ? y : h==12||h==14 ? x : z;
+        return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
+    }
+
+    function perlin3(x, y, z) {
+        var X = Math.floor(x) & 255,                  // FIND UNIT CUBE THAT
+            Y = Math.floor(y) & 255,                  // CONTAINS POINT.
+            Z = Math.floor(z) & 255;
+        x -= Math.floor(x);                                // FIND RELATIVE X,Y,Z
+        y -= Math.floor(y);                                // OF POINT IN CUBE.
+        z -= Math.floor(z);
+        var u = fade(x),                                // COMPUTE FADE CURVES
+            v = fade(y),                                // FOR EACH OF X,Y,Z.
+            w = fade(z);
+        var A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,      // HASH COORDINATES OF
+            B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;      // THE 8 CUBE CORNERS
+
+        return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD
+                                       grad(p[BA  ], x-1, y  , z   )), // BLENDED
+                               lerp(u, grad(p[AB  ], x  , y-1, z   ),  // RESULTS
+                                       grad(p[BB  ], x-1, y-1, z   ))),// FROM  8
+                       lerp(v, lerp(u, grad(p[AA+1], x  , y  , z-1 ),  // CORNERS
+                                       grad(p[BA+1], x-1, y  , z-1 )), // OF CUBE
+                               lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
+                                       grad(p[BB+1], x-1, y-1, z-1 ))));
+    }
+
+    return {
+        noise3: perlin3,
+        seed: seed
+    };
+})();
+
 const themeToggleButton = document.getElementById('themeToggle');
 
-// New 3D and perspective parameters
-const NUM_LINES = 50; // Total number of lines, will be split for near/far
-const PERSPECTIVE_STRENGTH = 0.2; // How quickly lines converge
-const VERTICAL_TILT_FACTOR = 15; // How much lines shift vertically with depth
-const LINE_SPACING_Z = 1.0; 
-
-// Lightness parameters for depth - more drastic range
-let currentMinLightness = 7; 
-let currentMaxLightness = 90; 
-let currentMidLightness = 50; 
-
-// Default dark mode values (will be overwritten if light mode is set)
-const DARK_MODE_MIN_LIGHTNESS = 7;
-const DARK_MODE_MAX_LIGHTNESS = 90;
-const DARK_MODE_MID_LIGHTNESS = 50;
-
-const LIGHT_MODE_MIN_LIGHTNESS = 93; // For far lines to blend with light bg (e.g. #f0f0f0 which is ~94% lightness)
-const LIGHT_MODE_MAX_LIGHTNESS = 20; // For near lines to be dark
-const LIGHT_MODE_MID_LIGHTNESS = 60; // Mid-point for light mode
-
-const MAX_ABS_NEAR_Z_IDX = 0; // Limit how close lines can get (max absolute value for negative z_idx)
-const VERTICAL_VIEW_OFFSET = 150; // Positive values shift the entire wave formation down
-
-// Mouse influence parameters
-const HOVER_MOUSE_INFLUENCE = 0.4; // Gentle pull on hover - NO LONGER USED FOR PULL, BUMP INSTEAD
-const CLICK_MOUSE_INFLUENCE = 1.0; // Stronger pull on click - REDUCED FROM 1.2 to 1.0 for smoothness
-const HOVER_BUMP_AMPLITUDE = 30;  // Max height of the bump on hover (in world units)
-
-let currentSpeedFactor = 2.75; // Fixed high speed (was: 1.0; slider went -4.0 to 4.0)
-let currentComplexityFactor = 0.5; // Default complexity (0 to 1 initially, now 0 to 2)
-let isMouseDown = false;
-let isWaveFrozen = false;
-let frozenMouseX = 0;
-let frozenMouseY = 0;
 let isLightMode = false;
-
-function setLightnessParams(isLight) {
-    if (isLight) {
-        currentMinLightness = LIGHT_MODE_MIN_LIGHTNESS;
-        currentMaxLightness = LIGHT_MODE_MAX_LIGHTNESS;
-        currentMidLightness = LIGHT_MODE_MID_LIGHTNESS;
-    } else {
-        currentMinLightness = DARK_MODE_MIN_LIGHTNESS;
-        currentMaxLightness = DARK_MODE_MAX_LIGHTNESS;
-        currentMidLightness = DARK_MODE_MID_LIGHTNESS;
-    }
-}
 
 function applyTheme(isLight) {
     document.body.classList.toggle('light-mode', isLight);
     themeToggleButton.textContent = isLight ? '☀️' : '🌙';
-    setLightnessParams(isLight);
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    
+    // Update noise visualization theme if it exists
+    handleNoiseTheme();
 }
 
 themeToggleButton.addEventListener('click', () => {
@@ -74,192 +97,12 @@ themeToggleButton.addEventListener('click', () => {
     applyTheme(isLightMode);
 });
 
-// Load theme preference on start
 const preferredTheme = localStorage.getItem('theme');
 if (preferredTheme === 'light') {
     isLightMode = true;
 }
-applyTheme(isLightMode); // Apply initial theme
 
-function updateWaveformColor() {
-    const hue = hueSlider.value;
-    // Using HSL color: Saturation 100%, Lightness 50% for vibrant colors
-    waveformColor = `hsl(${hue}, 100%, 50%)`;
-}
-
-hueSlider.addEventListener('input', updateWaveformColor);
-
-// speedSlider.addEventListener('input', () => { // Removed
-//     currentSpeedFactor = speedSlider.value / 100; 
-// });
-
-complexitySlider.addEventListener('input', () => {
-    currentComplexityFactor = complexitySlider.value / 100; // Convert 0-200 to 0-2.0
-});
-
-// Initialize color based on initial slider values
-updateWaveformColor();
-
-window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-});
-
-/*
-canvas.addEventListener('mousemove', (event) => {
-    mouseX = event.clientX;
-    mouseY = event.clientY;
-});
-
-canvas.addEventListener('mousedown', (event) => {
-    if (event.button === 0) { 
-        isMouseDown = true;
-        isWaveFrozen = false; // New drag unfreezes
-    }
-});
-
-window.addEventListener('mouseup', (event) => {
-    if (event.button === 0) { 
-        if (isMouseDown) { // Only freeze if it was a drag/click release
-            isWaveFrozen = true;
-            frozenMouseX = mouseX;
-            frozenMouseY = mouseY;
-        }
-        isMouseDown = false;
-    }
-});
-*/
-
-function animate() {
-    requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, width, height);
-
-    const time = performance.now() * 0.001 * currentSpeedFactor;
-    const baseAmplitude = 50;
-    const baseFrequency = 0.01;
-    const currentHue = hueSlider.value;
-
-    const halfLines = Math.floor(NUM_LINES / 2);
-
-    for (let z_idx = halfLines; z_idx >= -MAX_ABS_NEAR_Z_IDX; z_idx--) {
-        const z_world = z_idx * LINE_SPACING_Z;
-        const perspectiveScale = 1 / (1 + z_world * PERSPECTIVE_STRENGTH);
-
-        // Calculate lightness based on depth and mode
-        let lightness;
-        if (z_idx === 0) {
-            lightness = currentMidLightness;
-        } else if (z_idx > 0) { // Farther lines
-            const ratio = z_idx / halfLines;
-            // In light mode, far lines are lighter (currentMinLightness is high)
-            // In dark mode, far lines are darker (currentMinLightness is low)
-            lightness = currentMidLightness - ratio * (currentMidLightness - currentMinLightness);
-        } else { // z_idx < 0 (Nearer lines)
-            const ratio = Math.abs(z_idx) / MAX_ABS_NEAR_Z_IDX;
-            // In light mode, near lines are darker (currentMaxLightness is low)
-            // In dark mode, near lines are brighter (currentMaxLightness is high)
-            lightness = currentMidLightness + ratio * (currentMaxLightness - currentMidLightness);
-        }
-        lightness = Math.max(0, Math.min(100, Math.round(lightness)));
-
-        ctx.beginPath();
-        ctx.strokeStyle = `hsl(${currentHue}, 100%, ${lightness}%)`;
-
-        const currentAmplitude = baseAmplitude * perspectiveScale;
-        const currentLineWidth = Math.max(0.5, 2 * perspectiveScale);
-        ctx.lineWidth = currentLineWidth;
-        
-        const screenY_center_offset = height / 2 - z_world * VERTICAL_TILT_FACTOR + VERTICAL_VIEW_OFFSET;
-
-        // Calculate initial Y for this line at sx=0 (screen space)
-        let sx_start = 0;
-        let x_world_at_sx_start = (sx_start - width / 2) / perspectiveScale;
-
-        const wave1Y_x0 = Math.sin(x_world_at_sx_start * baseFrequency / perspectiveScale + time) * currentAmplitude;
-        const wave2AmpFactor = currentComplexityFactor * 1.5; 
-        const wave3AmpFactor = currentComplexityFactor * 1.2; 
-        const wave2FreqFactor = 1 + (currentComplexityFactor - 0.5) * 0.8; 
-        const wave3FreqFactor = 1 - (currentComplexityFactor - 0.5) * 0.4;
-        const wave2Y_x0 = Math.sin(x_world_at_sx_start * baseFrequency * 2.5 * wave2FreqFactor / perspectiveScale + time * 0.8) * (currentAmplitude / 3) * wave2AmpFactor;
-        const wave3Y_x0 = Math.sin(x_world_at_sx_start * baseFrequency * 0.5 * wave3FreqFactor / perspectiveScale + time * 0.5) * (currentAmplitude * 0.7) * wave3AmpFactor;
-        const combinedWaveY_x0 = wave1Y_x0 + wave2Y_x0 + wave3Y_x0;
-        
-        let targetY_x0_world = combinedWaveY_x0;
-        
-        const mouseX_at_depth = (mouseX - width / 2) / perspectiveScale; // Live mouse X for hover/active drag
-        const influenceRadiusBaseScreen = width / 3; // WIDENED from width / 4
-        const worldInfluenceWidth = influenceRadiusBaseScreen / perspectiveScale;
-        const influenceRadius = Math.pow(worldInfluenceWidth, 2);
-        
-        // --- For y_world_start (initial point of the line) ---
-        let y_calc_target_y0 = targetY_x0_world;
-        let final_y_world_start = y_calc_target_y0;
-
-        if (isWaveFrozen) {
-            const frozenMouseX_world = (frozenMouseX - width / 2) / perspectiveScale;
-            const distSqToFrozen_x0 = Math.pow(x_world_at_sx_start - frozenMouseX_world, 2);
-            const frozenInfluenceFactor_x0 = Math.exp(-distSqToFrozen_x0 / (2 * influenceRadius));
-            const frozenMouseY_world_displacement = (frozenMouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-            // final_y_world_start = y_calc_target_y0 + frozenMouseY_world_displacement * frozenInfluenceFactor_x0 * CLICK_MOUSE_INFLUENCE;
-        }
-
-        // if (isMouseDown) { // Active drag (isWaveFrozen is false here due to mousedown logic)
-        //     const liveInfluenceFactor_x0 = Math.exp(-Math.pow(x_world_at_sx_start - mouseX_at_depth, 2) / (2 * influenceRadius));
-        //     const mouseY_world_displacement = (mouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-        //     final_y_world_start = y_calc_target_y0 + mouseY_world_displacement * liveInfluenceFactor_x0 * CLICK_MOUSE_INFLUENCE;
-        // } else { // Hovering (potentially on top of a frozen wave)
-        //     const liveInfluenceFactor_x0 = Math.exp(-Math.pow(x_world_at_sx_start - mouseX_at_depth, 2) / (2 * influenceRadius));
-        //     const bumpDisplacement_x0 = HOVER_BUMP_AMPLITUDE * liveInfluenceFactor_x0;
-        //     final_y_world_start += bumpDisplacement_x0;
-        // }
-        y_world_start = final_y_world_start;
-
-        let screenY_start = y_world_start * perspectiveScale + screenY_center_offset;
-        ctx.moveTo(sx_start, screenY_start); // Use sx_start (which is 0)
-
-        for (let sx = 1; sx < width; sx++) { // Start loop from 1 as sx=0 is moveTo
-            let x_world = (sx - width / 2) / perspectiveScale;
-
-            const wave1Y = Math.sin(x_world * baseFrequency / perspectiveScale + time) * currentAmplitude;
-            const wave2Y = Math.sin(x_world * baseFrequency * 2.5 * wave2FreqFactor / perspectiveScale + time * 0.8) * (currentAmplitude / 3) * wave2AmpFactor;
-            const wave3Y = Math.sin(x_world * baseFrequency * 0.5 * wave3FreqFactor / perspectiveScale + time * 0.5) * (currentAmplitude * 0.7) * wave3AmpFactor;
-            const combinedWaveY = wave1Y + wave2Y + wave3Y;
-            let targetY_world = combinedWaveY;
-
-            // --- For y_world (points along the line) ---
-            let y_calc_target_y = targetY_world;
-            let final_y_world = y_calc_target_y;
-
-            if (isWaveFrozen) {
-                const frozenMouseX_world = (frozenMouseX - width / 2) / perspectiveScale;
-                const distSqToFrozen = Math.pow(x_world - frozenMouseX_world, 2); 
-                const frozenInfluenceFactor = Math.exp(-distSqToFrozen / (2 * influenceRadius));
-                const frozenMouseY_world_displacement = (frozenMouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-                // final_y_world = y_calc_target_y + frozenMouseY_world_displacement * frozenInfluenceFactor * CLICK_MOUSE_INFLUENCE;
-            }
-
-            // if (isMouseDown) { // Active drag
-            //     const liveInfluenceFactor = Math.exp(-Math.pow(x_world - mouseX_at_depth, 2) / (2 * influenceRadius));
-            //     const mouseY_world_displacement = (mouseY - height / 2) / perspectiveScale; // Mouse Y displacement from center in world units
-            //     final_y_world = y_calc_target_y + mouseY_world_displacement * liveInfluenceFactor * CLICK_MOUSE_INFLUENCE;
-            // } else { // Hovering
-            //     const liveInfluenceFactor = Math.exp(-Math.pow(x_world - mouseX_at_depth, 2) / (2 * influenceRadius));
-            //     const bumpDisplacement = HOVER_BUMP_AMPLITUDE * liveInfluenceFactor;
-            //     final_y_world += bumpDisplacement;
-            // }
-            y_world = final_y_world;
-
-            // Project to screen space
-            let screenY = y_world * perspectiveScale + screenY_center_offset;
-            ctx.lineTo(sx, screenY);
-        }
-        ctx.stroke();
-    }
-}
-
-animate(); 
-
-// --- START: New Blog Preview Logic ---
+// --- START: Blog Preview Logic ---
 
 async function fetchBlogSlugs() {
     try {
@@ -367,7 +210,7 @@ async function displayBlogPreviews() {
     previewsContainer.innerHTML = previewsHTML;
 }
 
-// --- END: New Blog Preview Logic ---
+// --- END: Blog Preview Logic ---
 
 // --- START: Project Preview Logic ---
 
@@ -420,10 +263,195 @@ async function displayProjectPreviews() {
 
 // --- END: Project Preview Logic ---
 
+// --- START: 3D Perlin Noise Visualization ---
+
+let noiseScene, noiseRenderer, noiseCamera, noiseLines = [];
+let noiseAnimationId;
+let noiseStartTime = Date.now();
+let noiseRotation = 0; // Variable to control plane rotation (in radians)
+let autoRotate = true; // Set to false to disable automatic rotation
+let autoRotateSpeed = 0.0005; // Speed of automatic rotation (radians per frame)
+
+function initPerlinNoiseVisualization() {
+    const canvas = document.getElementById('noiseCanvas');
+    if (!canvas || typeof THREE === 'undefined') {
+        console.error('Canvas element or Three.js not found');
+        return;
+    }
+
+    // Get container dimensions for responsive sizing
+    const container = canvas.parentElement;
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
+    // Scene setup
+    noiseScene = new THREE.Scene();
+    noiseScene.background = new THREE.Color(0x0a0a0a);
+
+    // Camera setup - positioned above and at an angle, slightly off-center (fixed position)
+    const aspect = width / height;
+    noiseCamera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+    noiseCamera.position.set(5, 20, 15);
+    noiseCamera.lookAt(0, 0, 0);
+
+    // Renderer setup
+    noiseRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    noiseRenderer.setSize(width, height);
+    noiseRenderer.shadowMap.enabled = true;
+    noiseRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // Create a group to hold all lines for easy rotation
+    const linesGroup = new THREE.Group();
+    noiseScene.add(linesGroup);
+
+    // Create parallel lines for the noise visualization
+    const numLines = 50;
+    const lineLength = 30;
+    const lineSpacing = 0.6;
+    const pointsPerLine = 100;
+
+    for (let i = 0; i < numLines; i++) {
+        const points = [];
+        const z = (i - numLines / 2) * lineSpacing;
+        
+        for (let j = 0; j < pointsPerLine; j++) {
+            const x = (j / (pointsPerLine - 1) - 0.5) * lineLength;
+            points.push(new THREE.Vector3(x, 0, z));
+        }
+
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0x00ffff,
+            linewidth: 2
+        });
+
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        linesGroup.add(line);
+        noiseLines.push({ line, geometry: lineGeometry, points, z });
+    }
+
+    // Store reference to the group for rotation control
+    noiseLines.group = linesGroup;
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+    noiseScene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(10, 20, 5);
+    noiseScene.add(directionalLight);
+
+    // Handle window resize
+    window.addEventListener('resize', onNoiseWindowResize);
+
+    // Start animation
+    animatePerlinNoise();
+}
+
+function onNoiseWindowResize() {
+    if (!noiseCamera || !noiseRenderer) return;
+    
+    const container = document.getElementById('noiseCanvas').parentElement;
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
+    noiseCamera.aspect = width / height;
+    noiseCamera.updateProjectionMatrix();
+    noiseRenderer.setSize(width, height);
+}
+
+function updatePerlinNoise() {
+    if (noiseLines.length === 0) return;
+
+    const time = (Date.now() - noiseStartTime) * 0.0002; // Slow time progression
+
+    // Update each line's Y coordinates using Perlin noise
+    noiseLines.forEach(lineData => {
+        const { geometry, points, z } = lineData;
+        const positions = geometry.attributes.position.array;
+
+        for (let i = 0; i < points.length; i++) {
+            const x = points[i].x;
+            
+            // Generate height using 3D Perlin noise with time component
+            const height1 = PerlinNoise.noise3(x * 0.3, z * 0.3, time) * 4;
+            const height2 = PerlinNoise.noise3(x * 0.1, z * 0.1, time * 0.5) * 2;
+            const height3 = PerlinNoise.noise3(x * 0.6, z * 0.6, time * 2) * 1;
+            
+            const finalHeight = height1 + height2 + height3;
+            
+            // Update Y coordinate (index * 3 + 1 is the Y coordinate)
+            positions[i * 3 + 1] = finalHeight;
+        }
+
+        geometry.attributes.position.needsUpdate = true;
+    });
+}
+
+function animatePerlinNoise() {
+    noiseAnimationId = requestAnimationFrame(animatePerlinNoise);
+    
+    updatePerlinNoise();
+    
+    // Handle automatic rotation
+    if (autoRotate) {
+        noiseRotation += autoRotateSpeed;
+    }
+    
+    // Apply rotation to the lines group using the noiseRotation variable
+    if (noiseLines.group) {
+        noiseLines.group.rotation.y = noiseRotation;
+    }
+    
+    noiseRenderer.render(noiseScene, noiseCamera);
+}
+
+// Helper function to manually set the rotation (in degrees for easier use)
+function setNoiseRotation(degrees) {
+    noiseRotation = degrees * (Math.PI / 180); // Convert degrees to radians
+}
+
+// Helper function to toggle automatic rotation
+function toggleAutoRotation() {
+    autoRotate = !autoRotate;
+}
+
+function handleNoiseTheme() {
+    if (!noiseScene) return;
+    
+    // Update background color based on theme
+    const isLight = document.body.classList.contains('light-mode');
+    noiseScene.background = new THREE.Color(isLight ? 0xf0f0f0 : 0x0a0a0a);
+    
+    // Update line colors
+    const lineColor = isLight ? 0x0066cc : 0x00ffff;
+    noiseLines.forEach(lineData => {
+        if (lineData.line && lineData.line.material) {
+            lineData.line.material.color.setHex(lineColor);
+        }
+    });
+}
+
+function cleanupNoiseVisualization() {
+    if (noiseAnimationId) {
+        cancelAnimationFrame(noiseAnimationId);
+    }
+    if (noiseRenderer) {
+        noiseRenderer.dispose();
+    }
+    window.removeEventListener('resize', onNoiseWindowResize);
+}
+
+// --- END: 3D Perlin Noise Visualization ---
+
 window.addEventListener('DOMContentLoaded', () => {
     applyTheme(isLightMode); // Apply initial theme from blog-post.html, ensure it's here for index
-    updateWaveformColor(); // Initialize color based on initial slider values
-    animate(); // Start the waveform animation
+
+    // Initialize 3D Perlin noise visualization if canvas exists
+    if (document.getElementById('noiseCanvas')) {
+        initPerlinNoiseVisualization();
+        handleNoiseTheme(); // Apply initial theme to noise visualization
+    }
 
     // Load blog previews if on the main page
     if (document.querySelector('.blog-previews')) {

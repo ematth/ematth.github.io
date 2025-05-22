@@ -1,6 +1,4 @@
-[
-  {
-    "id": "ms-thesis",
+[  {    "id": "perlin-noise-3d",    "title": "3D Perlin Noise Simulator",    "technologies": "Three.js, WebGL, JavaScript, HTML5",    "advisors": "",    "year": "2024",    "description": "Interactive 3D visualization of Perlin noise with real-time parameters control. Features a dynamically generated terrain with customizable amplitude, frequency, animation speed, and color gradients. The camera views the noise field from above at an angle, slightly off-centered for optimal viewing perspective. Built using Three.js for smooth 3D rendering and the classic Perlin noise algorithm for natural-looking procedural terrain generation.",    "links": [      {        "text": "View Simulator",        "url": "perlin-noise-3d.html"      }    ]  },  {    "id": "ms-thesis",
     "title": "MS Thesis: Text-to-Audio Generation Improvement through Text Recaptioning",
     "technologies": "",
     "advisors": "Paris Smaragdis",
