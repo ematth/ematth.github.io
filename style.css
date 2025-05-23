@@ -654,4 +654,90 @@ nav a:hover {
     height: 20px;
     cursor: pointer;
     accent-color: #00ffff; /* Match other interactive elements */
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 15px 20px; /* Smaller padding on smaller screens */
+    }
+
+    nav ul {
+        justify-content: center; /* Center nav items on smaller screens */
+        flex-wrap: wrap; /* Allow nav items to wrap */
+    }
+
+    nav li {
+        margin-left: 15px; /* Smaller margin on smaller screens */
+        margin-right: 15px; /* Add right margin for wrapping */
+    }
+
+    #themeToggle {
+        margin-left: 10px; /* Adjust margin */
+    }
+
+    .site-title {
+        font-size: 20px; /* Smaller font size for title */
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px 15px; /* Even smaller padding */
+    }
+
+    nav li {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .site-title {
+        font-size: 18px; /* Even smaller font size for title */
+    }
+
+    #themeToggle {
+        font-size: 20px; /* Smaller toggle icon */
+    }
+}
+
+@media (max-width: 768px) {
+    #noise-simulator {
+        padding-top: 60px; /* Adjust for smaller header */
+        min-height: 70vh; /* Adjust min-height for smaller screens */
+    }
+
+    .noise-container {
+        height: 70vh; /* Adjust height for smaller screens */
+    }
+
+    .noise-controls {
+        padding: 10px 15px; /* Smaller padding for controls */
+        gap: 10px; /* Smaller gap between controls */
+    }
+
+    .hue-control input[type="range"],
+    .smoothness-control input[type="range"] {
+        width: 150px; /* Shorter sliders */
+    }
+}
+
+@media (max-width: 480px) {
+    #noise-simulator {
+        padding-top: 50px; /* Adjust for even smaller header */
+        min-height: 60vh;
+    }
+
+    .noise-container {
+        height: 60vh;
+    }
+
+    .noise-controls {
+        flex-direction: column; /* Stack controls vertically */
+        align-items: center;
+        bottom: 10px; /* Adjust position */
+    }
+
+    .hue-control input[type="range"],
+    .smoothness-control input[type="range"] {
+        width: 120px; /* Even shorter sliders */
+    }
 } 
