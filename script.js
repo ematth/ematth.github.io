@@ -277,7 +277,7 @@ let autoRotate = true; // Set to false to disable automatic rotation
 let autoRotateSpeed = 0.0005; // Speed of automatic rotation (radians per frame)
 
 // Color and Theme Variables
-let targetBackgroundColor = new THREE.Color(0x0a0a0a);
+let targetBackgroundColor = new THREE.Color(0x1a1a1a); // Default to section background dark mode (#1a1a1a)
 // let targetLineColor = new THREE.Color(0x00ffff); // No longer needed globally for lines
 let colorTransitionSpeed = 0.02; // Lower = slower transition
 let currentHue = 180; // Default cyan hue (180 degrees)
@@ -454,7 +454,7 @@ function initPerlinNoiseVisualization() {
 
     // Scene setup
     noiseScene = new THREE.Scene();
-    noiseScene.background = new THREE.Color(0x0a0a0a);
+    noiseScene.background = new THREE.Color(0x1a1a1a); // Match section background dark mode (#1a1a1a)
 
     // Camera setup - positioned above and at an angle, slightly off-center (fixed position)
     const aspect = width / height;
@@ -648,7 +648,7 @@ function handleNoiseTheme() {
     if (!noiseScene) return;
     // Set target background color based on theme
     const isLight = document.body.classList.contains('light-mode');
-    targetBackgroundColor = new THREE.Color(isLight ? 0xf0f0f0 : 0x0a0a0a);
+    targetBackgroundColor = new THREE.Color(isLight ? 0xffffff : 0x1a1a1a); // Light: #ffffff, Dark: #1a1a1a
     // updateNoiseHue(); // Call this to update line color logic if hue changes independently of theme
 }
 

@@ -1,5 +1,7 @@
 html {
     scroll-behavior: smooth;
+    height: 100%; /* Establish a base height */
+    overflow-y: auto; /* Ensure vertical scrolling if needed for html */
 }
 
 body {
@@ -9,6 +11,8 @@ body {
     color: var(--text-color);
     transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    min-height: 100%; /* Ensure body can grow */
+    overflow-y: auto; /* Ensure vertical scrolling for body content (though html will likely handle it) */
 }
 
 :root {
@@ -21,6 +25,7 @@ body {
     --icon-color: #fff;
     --section-bg: #1a1a1a; /* Slightly different for sections in dark mode */
     --content-link-color: #00ffff; /* Standard cyan for dark mode */
+    --intro-content-vertical-align: center; /* Added variable for intro content vertical position */
 }
 
 body.light-mode {
@@ -37,7 +42,7 @@ body.light-mode {
 
 canvas {
     display: block; /* Remove extra space below canvas */
-    background-color: var(--canvas-bg);
+    background-color: transparent; /* Changed from var(--canvas-bg) */
     transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
@@ -178,21 +183,24 @@ nav a:hover {
 /* Noise Simulator Section Styling */
 #noise-simulator {
     padding: 0;
-    padding-top: 80px; /* Add space for header */
+    padding-top: 200px; /* User set */
     background-color: var(--section-bg, var(--bg-color));
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 80vh;
+    align-items: flex-start; /* Changed from center to ensure demo starts after padding */
+    /* min-height: calc(100vh + 200px); Removed, height will be auto based on content */
     width: 100%;
     transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+    margin-top: 0;
 }
 
 .noise-container {
     width: 100%;
-    height: 80vh;
+    height: 100vh;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #noiseCanvas {
@@ -739,5 +747,96 @@ nav a:hover {
     .hue-control input[type="range"],
     .smoothness-control input[type="range"] {
         width: 120px; /* Even shorter sliders */
+    }
+}
+
+/* Intro Section Styling */
+#intro {
+    position: absolute; /* Changed for overlay */
+    top: -300px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column; /* Stack intro content vertically */
+    align-items: center; /* Center content horizontally */
+    justify-content: var(--intro-content-vertical-align); /* Control vertical alignment with variable */
+    background-color: transparent; /* Ensure demo below is visible */
+    color: var(--text-color);
+    text-align: center; /* Center text within intro-content */
+    padding-top: 80px; /* Adjust to clear fixed header, affects content position */
+    box-sizing: border-box; /* Ensure padding is included in height/width */
+    z-index: 20; /* Above noise canvas, below controls/header */
+    /* Remove previous positioning and min-height if any */
+}
+
+.intro-content {
+    flex: 0 1 auto; /* Allow shrinking but don't grow beyond content, auto basis */
+    max-width: 600px; /* Limit width of text for readability */
+    margin-right: 0; /* Was 30px, remove for centering */
+}
+
+.intro-content h1 {
+    font-size: 2.8em;
+    margin-bottom: 20px;
+}
+
+.intro-content p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}
+
+.profile-picture-container {
+    flex-shrink: 0; /* Prevent image container from shrinking */
+}
+
+#profilePic {
+    width: 250px; /* Adjust size as needed */
+    height: 250px; /* Adjust size as needed */
+    border-radius: 50%; /* Circular profile picture */
+    object-fit: cover; /* Ensure image covers the area without distortion */
+    border: 3px solid var(--text-color); /* Optional border */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Responsive adjustments for Intro section */
+@media (max-width: 768px) {
+    #intro {
+        /* flex-direction: column; already set */
+        /* text-align: center; already set */
+        padding: 80px 30px 30px 30px; /* Ensure some padding around content, top padding for header */
+        /* padding-top: 100px; previous, now 80px + bottom padding */
+    }
+
+    .intro-content {
+        margin-right: 0; /* Remove right margin when stacked */
+        margin-bottom: 30px; /* Add space below text when stacked */
+        max-width: 100%; /* Allow full width */
+    }
+
+    .intro-content h1 {
+        font-size: 2.2em;
+    }
+
+    #profilePic {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    #intro {
+        padding: 60px 20px;
+        padding-top: 80px; /* Adjust for header */
+    }
+    .intro-content h1 {
+        font-size: 1.8em;
+    }
+    .intro-content p {
+        font-size: 1em;
+    }
+    #profilePic {
+        width: 150px;
+        height: 150px;
     }
 } 
