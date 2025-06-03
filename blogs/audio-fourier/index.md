@@ -3,7 +3,7 @@ title: Fourier Transform
 date: 2023-07-04
 ---
 
-The **Fourier Transform** is a transformation of a time-series function which returns a respective frequency-series function, or an equivalent function who takes a frequency $f$ as an input rather than a time $t$
+The Fourier Transform is a transformation of a time-series function which returns a respective frequency-series function, or an equivalent function who takes a frequency $f$ as an input rather than a time $t$
 
 $$\hat{f}(\xi) = \int_{-\infty}^{\infty} f(t) e^{-i2\pi\xi t} dt$$
 

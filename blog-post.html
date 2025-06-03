@@ -155,8 +155,27 @@
                     document.title = title; // Update page title
                     postDateElem.textContent = date;
                     
+                    // Construct the base URL for relative image paths, making it absolute from the domain root
+                    const baseUrl = `/blogs/${postFile}/`;
+
                     // Use marked.js to parse Markdown content to HTML
                     postContentElem.innerHTML = marked.parse(content);
+
+                    // Adjust image paths for <img> tags manually
+                    const images = postContentElem.getElementsByTagName('img');
+                    console.log(`Found ${images.length} images in post content.`); // Log how many images are found
+                    for (let img of images) {
+                        let currentSrc = img.getAttribute('src');
+                        console.log(`Original img src: ${currentSrc}`); // Log original src
+                        // Check if it's a relative path and not an absolute or data URI
+                        if (currentSrc && !currentSrc.startsWith('http') && !currentSrc.startsWith('/') && !currentSrc.startsWith('data:')) {
+                            const newSrc = baseUrl + currentSrc;
+                            console.log(`BaseURL: ${baseUrl}, New img src: ${newSrc}`); // Log new src
+                            img.setAttribute('src', newSrc);
+                        } else {
+                            console.log(`Src not modified (already absolute or data URI): ${currentSrc}`);
+                        }
+                    }
 
                     renderMathInElement(postContentElem, {
                         delimiters: [

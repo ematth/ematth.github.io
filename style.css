@@ -198,7 +198,7 @@ nav a:hover {
 
 .noise-container {
     width: 100%;
-    height: 100vh;
+    height: 80vh; /* Changed from 100vh */
     position: relative;
     overflow: visible;
 }
@@ -686,6 +686,10 @@ nav a:hover {
     .site-title {
         font-size: 20px; /* Smaller font size for title */
     }
+
+    .noise-container {
+        height: 80vh; /* Adjust height for smaller screens - Changed from 70vh */
+    }
 }
 
 @media (max-width: 480px) {
@@ -705,6 +709,10 @@ nav a:hover {
     #themeToggle {
         font-size: 20px; /* Smaller toggle icon */
     }
+
+    .noise-container {
+        height: 40vh; /* Changed from 60vh */
+    }
 }
 
 @media (max-width: 768px) {
@@ -714,7 +722,7 @@ nav a:hover {
     }
 
     .noise-container {
-        height: 70vh; /* Adjust height for smaller screens */
+        height: 50vh; /* Adjust height for smaller screens */
     }
 
     .noise-controls {
@@ -735,7 +743,7 @@ nav a:hover {
     }
 
     .noise-container {
-        height: 60vh;
+        height: 40vh;
     }
 
     .noise-controls {
@@ -753,7 +761,7 @@ nav a:hover {
 /* Intro Section Styling */
 #intro {
     position: absolute; /* Changed for overlay */
-    top: -300px;
+    top: -365px;
     left: 0;
     width: 100%;
     height: 100%;

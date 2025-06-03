@@ -639,11 +639,6 @@ function setNoiseRotation(degrees) {
     noiseRotation = degrees * (Math.PI / 180); // Convert degrees to radians
 }
 
-// Helper function to toggle automatic rotation
-function toggleAutoRotation() {
-    autoRotate = !autoRotate;
-}
-
 function handleNoiseTheme() {
     if (!noiseScene) return;
     // Set target background color based on theme
@@ -754,14 +749,9 @@ window.addEventListener('DOMContentLoaded', () => {
         displayProjectPreviews();
     }
 
-    // Set rotation manually (in degrees for convenience)
-    setNoiseRotation(60); // Rotates to 45 degrees
+    // Set initial rotation manually (in degrees for convenience)
+    setNoiseRotation(60); // Rotates to 60 degrees
 
-    // Toggle automatic rotation on/off
-    toggleAutoRotation();
-
-    // Direct variable access
-    noiseRotation = Math.PI / 4; // Set to 45 degrees (π/4 radians)
-    autoRotate = false; // Disable automatic rotation
-    autoRotateSpeed = 0.001; // Make rotation faster
+    // Ensure automatic rotation is enabled and uses the global slow speed
+    autoRotate = true; 
 }); 
