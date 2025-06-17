@@ -361,15 +361,16 @@ nav a:hover {
 }
 
 .aboutme-image {
-    max-width: 300px; /* Adjust as needed */
-    width: 100%; /* Make it responsive within its container/max-width */
-    height: auto; /* Maintain aspect ratio */
+    width: 250px; /* Fixed width */
+    height: 250px; /* Fixed height to make it square */
     border-radius: 50%; /* Make it circular */
     display: block;
     margin: 0 auto 30px auto; /* Center it and add space below */
     border: 3px solid var(--text-color); /* Optional border */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    object-fit: cover; /* This ensures the image covers the area while maintaining aspect ratio */
+    object-position: center; /* Center the image within the circle */
 }
 
 /* Blog Section Styling */
