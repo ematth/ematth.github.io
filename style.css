@@ -1,851 +1,194 @@
 html {
-    scroll-behavior: smooth;
-    height: 100%; /* Establish a base height */
-    overflow-y: auto; /* Ensure vertical scrolling if needed for html */
+    height: 100%;
 }
 
+/* General Body & Layout */
 body {
-    margin: 0;
-    /* overflow: hidden; */ /* Allow scrolling for sections */
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    min-height: 100%; /* Ensure body can grow */
-    overflow-y: auto; /* Ensure vertical scrolling for body content (though html will likely handle it) */
-}
-
-:root {
-    --bg-color: #111;
-    --text-color: #fff;
-    --header-bg: rgba(0, 0, 0, 0.3);
-    --canvas-bg: #111;
-    --controls-bg: rgba(0, 0, 0, 0.3);
-    --slider-track-bg: #555;
-    --icon-color: #fff;
-    --section-bg: #1a1a1a; /* Slightly different for sections in dark mode */
-    --content-link-color: #00ffff; /* Standard cyan for dark mode */
-    --intro-content-vertical-align: center; /* Added variable for intro content vertical position */
-}
-
-body.light-mode {
-    --bg-color: #f0f0f0;
-    --text-color: #333;
-    --header-bg: rgba(255, 255, 255, 0.5);
-    --canvas-bg: #f0f0f0; /* Light background for canvas in light mode */
-    --controls-bg: rgba(220, 220, 220, 0.8);
-    --slider-track-bg: #ccc;
-    --icon-color: #333;
-    --section-bg: #fff; /* White for sections in light mode */
-    --content-link-color: #008b8b; /* Darker cyan for light mode (DarkCyan) */
-}
-
-canvas {
-    display: block; /* Remove extra space below canvas */
-    background-color: transparent; /* Changed from var(--canvas-bg) */
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px 50px;
-    background-color: var(--header-bg);
-    z-index: 1000; /* Ensure header is above the canvas */
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12px;
+    background-image: url('assets/images/space1.webp');
+    color: #000000;
+    margin: 20px auto;
+    width: 960px;
+    border: 2px outset #000000;
+    padding: 10px;
     box-sizing: border-box;
-    display: flex; /* For aligning nav and toggle */
-    justify-content: space-between; /* Pushes nav and toggle apart */
-    align-items: center;
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+a {
+    color: #0000FF;
+}
+
+a:visited {
+    color: #800080;
+}
+
+h1, h2, h3 {
+    font-family: "Times New Roman", Times, serif;
+}
+
+h1 {
+    font-size: 24px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 18px;
+    border-bottom: 1px solid #000000;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #000;
+    margin-bottom: 10px;
+}
+
+.site-title {
+    font-size: 36px;
+    font-weight: bold;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: #00FFFF;
 }
 
 nav ul {
     list-style: none;
-    margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: flex-end; /* Align links to the right */
+    margin: 10px 0 0 0;
 }
 
 nav li {
-    margin-left: 30px;
+    display: inline;
+    margin: 0 15px;
 }
 
 nav a {
     text-decoration: none;
-    color: var(--text-color);
-    /* font-family: Arial, sans-serif; */ /* Replaced by body font stack */
-    font-size: 16px;
     font-weight: bold;
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    color: #00FFFF;
 }
 
-nav a:hover {
-    color: #00ffff; /* Cyan color on hover, matching the waveform */
-}
-
-#themeToggle {
-    font-size: 24px;
-    cursor: pointer;
-    padding: 5px 10px; /* Added some horizontal padding */
-    color: var(--icon-color);
-    margin-left: 20px; /* Space between nav and toggle if nav is not empty */
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.controls {
-    position: absolute; /* Changed from fixed to absolute */
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 20px;
-    padding: 10px 20px;
-    background-color: var(--controls-bg);
-    border-radius: 8px;
-    z-index: 1000;
-}
-
-.controls div {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.controls label {
-    color: var(--icon-color);
-    /* font-family: Arial, sans-serif; */ /* Fallback font - Replaced by body font stack */
-    font-size: 20px; /* Increased size for icons */
-    cursor: default; /* Make it look like a label */
-    line-height: 1; /* Ensure icons align well */
-}
-
-.controls input[type="range"] {
-    width: 250px; /* Increased width */
-    height: 20px; /* Increased height for better touch/click target and visual */
-    /* background-image removed from general slider, will be specific to hue-slider */
-    -webkit-appearance: none; /* Override default appearance */
-    appearance: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: var(--slider-track-bg);
-}
-
-.controls input[type="range"].hue-slider {
-    background-image: linear-gradient(to right, 
-        hsl(0, 100%, 50%), 
-        hsl(60, 100%, 50%), 
-        hsl(120, 100%, 50%), 
-        hsl(180, 100%, 50%), 
-        hsl(240, 100%, 50%), 
-        hsl(300, 100%, 50%), 
-        hsl(360, 100%, 50%)
-    );
-}
-
-/* Styling for the thumb (slider handle) - WebKit browsers */
-.controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 25px;
-    background: #fff;
-    border-radius: 3px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-}
-
-/* Styling for the thumb (slider handle) - Firefox */
-.controls input[type="range"]::-moz-range-thumb {
-    width: 15px;
-    height: 25px;
-    background: #fff;
-    border-radius: 3px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    border: none; /* Firefox adds a border by default */
-}
-
-.site-title {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font */
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--text-color);
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+nav a:visited {
+    color: #00FFFF;
 }
 
 .site-title-link {
     text-decoration: none;
 }
 
-/* Noise Simulator Section Styling */
-#noise-simulator {
-    padding: 0;
-    padding-top: 200px; /* User set */
-    background-color: var(--section-bg, var(--bg-color));
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Changed from center to ensure demo starts after padding */
-    /* min-height: calc(100vh + 200px); Removed, height will be auto based on content */
-    width: 100%;
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-    position: relative;
-    z-index: 1;
-    margin-top: 0;
+/* Sections */
+section {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #F0F0F0;
+    border: 2px inset #000000;
 }
 
-.noise-container {
-    width: 100%;
-    height: 80vh; /* Changed from 100vh */
-    position: relative;
-    overflow: visible;
-}
-
-#noiseCanvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-.noise-controls {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 20px;
-    padding: 15px 25px;
-    background-color: var(--controls-bg);
-    border-radius: 8px;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.hue-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.hue-control label {
-    color: var(--icon-color);
-    font-size: 20px;
-    cursor: default;
-    line-height: 1;
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.hue-control input[type="range"] {
-    width: 200px;
-    height: 20px;
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-image: linear-gradient(to right, 
-        hsl(0, 100%, 50%), 
-        hsl(60, 100%, 50%), 
-        hsl(120, 100%, 50%), 
-        hsl(180, 100%, 50%), 
-        hsl(240, 100%, 50%), 
-        hsl(300, 100%, 50%), 
-        hsl(360, 100%, 50%)
-    );
-}
-
-.hue-control input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border-radius: 50%;
-    border: 2px solid #333;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.hue-control input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border-radius: 50%;
-    border: 2px solid #333;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.smoothness-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.smoothness-control label {
-    color: var(--icon-color);
-    font-size: 20px;
-    cursor: default;
-    line-height: 1;
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.smoothness-control input[type="range"] {
-    width: 150px; /* Slightly narrower than hue, can be adjusted */
-    height: 20px;
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: var(--slider-track-bg); /* Simple background for this one */
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.smoothness-control input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border-radius: 50%;
-    border: 2px solid #333;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.smoothness-control input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border-radius: 50%;
-    border: 2px solid #333;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* General Content Link Styling */
-/* Targets links within paragraphs in the #about section specifically */
-#about p a {
-    color: var(--content-link-color); /* Use CSS variable */
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-#about p a:hover {
-    color: var(--text-color); /* Fallback to standard text color on hover */
-    /* text-decoration: underline; */ /* Optional: underline on hover for accessibility */
-}
-
-/* About Section Styling */
-#about {
-    padding: 100px 50px; /* Add significant padding */
-    min-height: 50vh; /* Ensure it takes up some space */
-    background-color: var(--section-bg, var(--bg-color)); /* Use specific or fallback to body bg */
-    color: var(--text-color);
-    text-align: center; /* Center content for now */
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-#about h2 {
-    font-size: 2.5em;
-    margin-bottom: 30px;
-}
-
-#about p {
-    font-size: 1.2em;
-    line-height: 1.6;
-    max-width: 800px;
-    margin: 0 auto 20px auto; /* Center paragraph block */
+#intro {
+    text-align: center;
 }
 
 .aboutme-image {
-    width: 250px; /* Fixed width */
-    height: 250px; /* Fixed height to make it square */
-    border-radius: 50%; /* Make it circular */
-    display: block;
-    margin: 0 auto 30px auto; /* Center it and add space below */
-    border: 3px solid var(--text-color); /* Optional border */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-    object-fit: cover; /* This ensures the image covers the area while maintaining aspect ratio */
-    object-position: center; /* Center the image within the circle */
-}
-
-/* Blog Section Styling */
-#blog {
-    padding: 60px 50px; /* Consistent padding */
-    background-color: var(--section-bg, var(--bg-color));
-    color: var(--text-color);
-    text-align: center;
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-#blog h2 {
-    font-size: 2.5em;
-    margin-bottom: 40px;
+    width: 150px;
+    height: 150px;
+    border: 2px solid #000;
+    float: left;
+    margin-right: 15px;
 }
 
 .see-all-blogs-link {
-    display: block; /* Or inline-block */
-    text-align: center;
-    margin-bottom: 25px; /* Space before the preview boxes */
-    font-size: 1.1em;
-    color: #00ffff; /* Cyan to match other links */
-    text-decoration: none;
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.see-all-blogs-link:hover {
-    color: var(--text-color);
-}
-
-.blog-previews {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto; /* Center the grid */
-}
-
-.blog-preview-box {
-    background-color: var(--bg-color); /* Use body background, or a slightly different shade if defined */
-    border: 1px solid var(--slider-track-bg); /* Use a subtle border color */
-    padding: 25px;
-    border-radius: 8px;
-    text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-    color: var(--text-color);
-}
-
-.blog-preview-box:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.blog-preview-box h3 {
-    font-size: 1.5em;
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: var(--text-color); /* Ensure heading color matches theme */
-}
-
-.blog-preview-box p {
-    font-size: 1em;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-.blog-preview-box .read-more {
-    text-decoration: none;
-    color: #00ffff; /* Cyan, matching wave hover */
-    font-weight: bold;
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-.blog-preview-box .read-more:hover {
-    color: var(--text-color); /* Change to main text color on hover */
-}
-
-.post-meta-preview {
-    font-size: 0.8em;
-    color: var(--text-color); /* Or a slightly more muted color if preferred */
-    opacity: 0.8;
+    display: block;
+    text-align: right;
     margin-bottom: 10px;
 }
 
-/* Projects Section Styling */
-#projects {
-    padding: 60px 50px; /* Consistent padding */
-    background-color: var(--section-bg, var(--bg-color));
-    color: var(--text-color);
-    text-align: center;
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+.blog-previews, .project-previews, .document-previews {
+    display: block;
 }
 
-#projects h2 {
-    font-size: 2.5em;
-    margin-bottom: 40px;
-}
-
-.project-previews {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto; /* Center the grid */
-}
-
-.project-preview-box {
-    background-color: var(--bg-color); 
-    border: 1px solid var(--slider-track-bg);
-    padding: 25px;
-    border-radius: 8px;
-    text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-    color: var(--text-color);
-}
-
-.project-preview-box:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.project-preview-box h3 {
-    font-size: 1.5em;
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: var(--text-color);
-}
-
-.project-preview-box p {
-    font-size: 1em;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-.project-meta-preview {
-    font-size: 0.8em;
-    color: var(--text-color);
-    opacity: 0.8;
+.blog-preview-box, .project-preview-box, .document-preview-box {
+    border: 1px solid #999;
+    padding: 10px;
     margin-bottom: 10px;
 }
 
-.project-links-preview {
-    display: flex;
-    gap: 12px;
-    margin-top: 15px;
-}
-
-.project-links-preview a, .project-link {
-    display: inline-block;
-    padding: 6px 12px;
-    background-color: var(--slider-track-bg);
-    color: var(--text-color);
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9em;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.project-links-preview a:hover, .project-link:hover {
-    background-color: #00ffff;
-    color: #000;
-}
-
-/* Resume/CV Section Styling */
-#resume {
-    padding: 60px 50px;
-    background-color: var(--section-bg, var(--bg-color));
-    color: var(--text-color);
-    text-align: center;
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-#resume h2 {
-    font-size: 2.5em;
-    margin-bottom: 40px;
-}
-
-.document-previews {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    max-width: 900px; /* Adjusted max-width for potentially two items */
-    margin: 0 auto;
-}
-
-.document-preview-box {
-    background-color: var(--bg-color);
-    border: 1px solid var(--slider-track-bg);
-    padding: 25px;
-    border-radius: 8px;
-    text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-    color: var(--text-color);
-}
-
-.document-preview-box:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.document-preview-box h3 {
-    font-size: 1.5em;
+.blog-preview-box h3, .project-preview-box h3, .document-preview-box h3 {
     margin-top: 0;
-    margin-bottom: 15px;
-    color: var(--text-color);
 }
 
-.document-preview-box p {
-    font-size: 1em;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-.document-preview-box .read-more {
-    text-decoration: none;
-    color: #00ffff;
+.read-more, .project-link {
     font-weight: bold;
-    transition: color 0.3s ease;
-    display: inline-block; /* Allows for better spacing/padding if needed */
-    padding: 8px 15px;
-    border: 1px solid #00ffff;
-    border-radius: 5px;
-}
-
-.document-preview-box .read-more:hover {
-    color: var(--bg-color);
-    background-color: #00ffff;
-}
-
-/* Contact Section Styling */
-#contact {
-    padding: 60px 50px;
-    background-color: var(--bg-color); /* Match main background or a subtle variation */
-    color: var(--text-color);
-    text-align: center;
-    transition: background-color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
-}
-
-#contact h2 {
-    font-size: 2.5em;
-    margin-bottom: 40px;
 }
 
 .social-links {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 25px; /* Spacing between icons */
-}
-
-.social-link {
-    color: var(--text-color);
-    text-decoration: none;
-    font-size: 28px; /* Adjust for icon size */
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.social-link:hover {
-    color: #00ffff; /* Highlight color on hover */
-    transform: scale(1.1);
+    text-align: center;
+    padding: 10px 0;
 }
 
 .social-link img {
-    width: 40px; /* Desired icon width */
-    height: 40px; /* Desired icon height */
-    display: block; /* Remove extra space under img if any */
+    width: 32px;
+    height: 32px;
+    border: 0;
 }
 
-/* Basic placeholder styling - replace with actual icons */
-/* .icon-placeholder { ... } // This can be removed or commented out */
+/* Hide modern elements */
+#themeToggle, #noise-simulator {
+    display: none;
+}
 
-/* .social-link:hover .icon-placeholder { ... } // This can be removed or commented out */
+footer {
+    text-align: center;
+    font-size: 10px;
+    margin-top: 20px;
+    border-top: 1px dashed #000;
+    padding-top: 10px;
+}
 
-.perpendicular-toggle-control {
+/* Noise Simulator */
+#noise-simulator {
+    text-align: center;
+}
+
+#noiseCanvas {
+    border: 2px inset #000000;
+    background-color: #000;
+    width: 100%;
+    height: 400px;
+}
+
+.noise-controls {
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #000;
+    display: inline-block;
+    background-color: #dfdfdf;
+}
+
+.noise-controls div {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+body.stretch-main {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    min-height: calc(100vh - 40px);
 }
 
-.perpendicular-toggle-control label {
-    color: var(--icon-color);
-    font-size: 20px;
-    cursor: pointer; /* Make label clickable for checkbox */
-    line-height: 1;
-    transition: color 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+body.stretch-main > section {
+    flex-grow: 1;
 }
 
-.perpendicular-toggle-control input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    accent-color: #00ffff; /* Match other interactive elements */
+#perlin-animation {
+    border: 2px inset #000000;
+    background-color: #000;
+    margin-bottom: 10px;
+    height: 400px;
 }
 
-@media (max-width: 768px) {
-    header {
-        padding: 15px 20px; /* Smaller padding on smaller screens */
-    }
-
-    nav ul {
-        justify-content: center; /* Center nav items on smaller screens */
-        flex-wrap: wrap; /* Allow nav items to wrap */
-    }
-
-    nav li {
-        margin-left: 15px; /* Smaller margin on smaller screens */
-        margin-right: 15px; /* Add right margin for wrapping */
-    }
-
-    #themeToggle {
-        margin-left: 10px; /* Adjust margin */
-    }
-
-    .site-title {
-        font-size: 20px; /* Smaller font size for title */
-    }
-
-    .noise-container {
-        height: 80vh; /* Adjust height for smaller screens - Changed from 70vh */
-    }
-}
-
-@media (max-width: 480px) {
-    header {
-        padding: 10px 15px; /* Even smaller padding */
-    }
-
-    nav li {
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    .site-title {
-        font-size: 18px; /* Even smaller font size for title */
-    }
-
-    #themeToggle {
-        font-size: 20px; /* Smaller toggle icon */
-    }
-
-    .noise-container {
-        height: 40vh; /* Changed from 60vh */
-    }
-}
-
-@media (max-width: 768px) {
-    #noise-simulator {
-        padding-top: 60px; /* Adjust for smaller header */
-        min-height: 70vh; /* Adjust min-height for smaller screens */
-    }
-
-    .noise-container {
-        height: 50vh; /* Adjust height for smaller screens */
-    }
-
-    .noise-controls {
-        padding: 10px 15px; /* Smaller padding for controls */
-        gap: 10px; /* Smaller gap between controls */
-    }
-
-    .hue-control input[type="range"],
-    .smoothness-control input[type="range"] {
-        width: 150px; /* Shorter sliders */
-    }
-}
-
-@media (max-width: 480px) {
-    #noise-simulator {
-        padding-top: 50px; /* Adjust for even smaller header */
-        min-height: 60vh;
-    }
-
-    .noise-container {
-        height: 40vh;
-    }
-
-    .noise-controls {
-        flex-direction: column; /* Stack controls vertically */
-        align-items: center;
-        bottom: 10px; /* Adjust position */
-    }
-
-    .hue-control input[type="range"],
-    .smoothness-control input[type="range"] {
-        width: 120px; /* Even shorter sliders */
-    }
-}
-
-/* Intro Section Styling */
-#intro {
-    position: absolute; /* Changed for overlay */
-    top: -365px;
-    left: 0;
+#perlin-canvas {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column; /* Stack intro content vertically */
-    align-items: center; /* Center content horizontally */
-    justify-content: var(--intro-content-vertical-align); /* Control vertical alignment with variable */
-    background-color: transparent; /* Ensure demo below is visible */
-    color: var(--text-color);
-    text-align: center; /* Center text within intro-content */
-    padding-top: 80px; /* Adjust to clear fixed header, affects content position */
-    box-sizing: border-box; /* Ensure padding is included in height/width */
-    z-index: 20; /* Above noise canvas, below controls/header */
-    /* Remove previous positioning and min-height if any */
-}
-
-.intro-content {
-    flex: 0 1 auto; /* Allow shrinking but don't grow beyond content, auto basis */
-    max-width: 600px; /* Limit width of text for readability */
-    margin-right: 0; /* Was 30px, remove for centering */
-}
-
-.intro-content h1 {
-    font-size: 2.8em;
-    margin-bottom: 20px;
-}
-
-.intro-content p {
-    font-size: 1.2em;
-    line-height: 1.6;
-}
-
-.profile-picture-container {
-    flex-shrink: 0; /* Prevent image container from shrinking */
-}
-
-#profilePic {
-    width: 250px; /* Adjust size as needed */
-    height: 250px; /* Adjust size as needed */
-    border-radius: 50%; /* Circular profile picture */
-    object-fit: cover; /* Ensure image covers the area without distortion */
-    border: 3px solid var(--text-color); /* Optional border */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-/* Responsive adjustments for Intro section */
-@media (max-width: 768px) {
-    #intro {
-        /* flex-direction: column; already set */
-        /* text-align: center; already set */
-        padding: 80px 30px 30px 30px; /* Ensure some padding around content, top padding for header */
-        /* padding-top: 100px; previous, now 80px + bottom padding */
-    }
-
-    .intro-content {
-        margin-right: 0; /* Remove right margin when stacked */
-        margin-bottom: 30px; /* Add space below text when stacked */
-        max-width: 100%; /* Allow full width */
-    }
-
-    .intro-content h1 {
-        font-size: 2.2em;
-    }
-
-    #profilePic {
-        width: 200px;
-        height: 200px;
-    }
-}
-
-@media (max-width: 480px) {
-    #intro {
-        padding: 60px 20px;
-        padding-top: 80px; /* Adjust for header */
-    }
-    .intro-content h1 {
-        font-size: 1.8em;
-    }
-    .intro-content p {
-        font-size: 1em;
-    }
-    #profilePic {
-        width: 150px;
-        height: 150px;
-    }
 } 

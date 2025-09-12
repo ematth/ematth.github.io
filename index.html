@@ -8,23 +8,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body id="home">
-    <header>
-        <a href="#home" class="site-title-link"><div class="site-title">Ematth.dev</div></a>
-        <nav>
-            <ul>
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#resume">Resume</a></li>
-            </ul>
-        </nav>
-        <div id="themeToggle" title="Toggle light/dark mode">☀️</div>
-    </header>
+    <div id="header-placeholder"></div>
 
     <section id="intro">
         <div class="intro-content">
-            <h1>Hi, I'm Evan 👋</h1>
-            <p>Welcome to my personal website!</p>
+            <h1>Welcome to my website!</h1>
+            <p>This is a currently work in progress. Check back soon for more updates.</p>
             <!-- You can add more introductory text or elements here -->
         </div>
         <!-- <div class="profile-picture-container">
@@ -33,64 +22,12 @@
         </div> -->
     </section>
 
-    <script src="script.js"></script>
-
-    <section id="noise-simulator">
-        <div class="noise-container">
-            <canvas id="noiseCanvas"></canvas>
-            <div class="noise-controls">
-                <div class="hue-control">
-                    <label for="hueSlider">🎨</label>
-                    <input type="range" id="hueSlider" min="0" max="360" value="180" class="hue-slider">
-                </div>
-                <div class="smoothness-control">
-                    <label for="smoothnessSlider">〰️</label>
-                    <input type="range" id="smoothnessSlider" min="10" max="200" value="100">
-                </div>
-                <div class="perpendicular-toggle-control">
-                    <label for="perpendicularToggle">⛓️</label>
-                    <input type="checkbox" id="perpendicularToggle">
-                </div>
-            </div>
-        </div>
+    <section id="perlin-animation">
+        <canvas id="perlin-canvas"></canvas>
     </section>
 
-    <section id="about">
-        <h2>About Me</h2>
-        <img src="assets/images/aboutpic.jpg" alt="A picture of Evan Matthews" class="aboutme-image">
-        <p>
-        <b>Evan Michael Matthews</b> is a signal processing engineer, computer scientist and music composer, with an MS in Computer Science and a BS in Computer Science + Music from the University of Illinois Urbana-Champaign.
-        His research focuses on audio computing and AI/ML, more specifically the improvement of AI audio generation and lossless translation between sheet music and audio. 
-        He is an alum of the CS Audio Lab, under thesis advising from <a href="https://paris.cs.illinois.edu">Paris Smaragdis</a> and with additional guidance from <a href="https://minjekim.com">Minje Kim</a>.
-        </p>
-        <p>
-        Evan picked up interests in music when he began learning to play piano and clarinet at age 12. 
-        In high school, he participated in the MTHS Wind Ensemble and tried music composition for the first time.
-        He took second place in the 2018 and 2019 ILMEA Composition Tracks for his solo piano works, leading him to study music composition and computer science at the University of Illinois Urbana-Champaign.
-        </p>
-        <p>
-        Evan continued composing as an undergraduate student at the University of Illinois Urbana-Champaign, 
-        where he delved into experimental and computer music, participated in the UIUC Electronic Music Studios (EMS), 
-        and studied under <a href="https://stephenandrewtaylor.net">Stephen Andrew Taylor</a>, <a href="https://music.illinois.edu/people/profiles/reynold-tharp/">Reynold Tharp</a>, <a href="https://music.illinois.edu/people/profiles/heinrich-taube/">Heinrich Taube</a>, and <a href="http://www.elifieldsteel.com">Eli Fieldsteel</a>. 
-        As a graduate student, he continued to compose in his free time, where his focus shifted to scores made using ML and image generation techniques.
-        </p>
-    </section>
-
-    <section id="projects">
-        <h2>Projects</h2>
-        <a href="all-projects.html" class="see-all-blogs-link">See all projects</a>
-        <div class="project-previews">
-            <!-- Project previews will be dynamically loaded here by script.js -->
-        </div>
-    </section>
-
-    <section id="blog">
-        <h2>Blog</h2>
-        <a href="all-blogs.html" class="see-all-blogs-link">See all blogs</a>
-        <div class="blog-previews">
-            <!-- Blog previews will be dynamically loaded here by script.js -->
-        </div>
-    </section>
+    <script src="header.js"></script>
+    <script src="perlin.js"></script>
 
     <section id="resume">
         <h2>Resume</h2>
