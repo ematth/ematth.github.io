@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
 html {
     height: 100%;
 }
@@ -48,7 +50,7 @@ header {
 .site-title {
     font-size: 36px;
     font-weight: bold;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: "Comic Neue", cursive, sans-serif;
     color: #00FFFF;
 }
 
@@ -125,6 +127,12 @@ section {
 .social-links {
     text-align: center;
     padding: 10px 0;
+}
+
+.social-link {
+    display: inline-block;
+    margin: 0 10px;
+    text-decoration: none;
 }
 
 .social-link img {

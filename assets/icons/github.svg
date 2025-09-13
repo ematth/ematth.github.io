@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="40" height="40">
-  <style>
-    path { fill: var(--text-color, white); } /* Fallback to white if --text-color is not defined */
-    text { fill: var(--bg-color, black); }   /* Fallback to black if --bg-color is not defined */
-  </style>
-  <path d="M50 0 L85.35 14.65 L100 50 L85.35 85.35 L50 100 L14.65 85.35 L0 50 L14.65 14.65 Z"/>
-  <text x="50" y="62" font-size="40" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold">GH</text>
-</svg> 

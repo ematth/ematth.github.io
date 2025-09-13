@@ -22,20 +22,20 @@ Score A2 - https://www.youtube.com/watch?v=i-loP8cCRe8
 ## Scores
 
 <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 20px 5;">
-    <img src="score-a-1.png" alt="score-a-1" style="width: 31.5%; height: auto;">
-    <img src="score-a-2.png" alt="score-a-2" style="width: 31.5%; height: auto;">
-    <img src="score-a-3.png" alt="score-a-3" style="width: 31.5%; height: auto;">
-    <img src="score-b-1.jpeg" alt="score-b-1" style="width: 100%; height: auto;">
-    <img src="score-c-1.png" alt="score-c-1" style="width: 48.5%; height: auto;">
-    <img src="score-d-1.png" alt="score-d-1" style="width: 48.5%; height: auto;">
-    <img src="score-e-1.png" alt="score-e-1" style="width: 48.5%; height: auto;">
-    <img src="score-f-1.png" alt="score-f-1" style="width: 48.5%; height: auto;">
-    <img src="score-g-1.png" alt="score-g-1" style="width: 48.5%; height: auto;">
-    <img src="score-g-2.png" alt="score-g-2" style="width: 48.5%; height: auto;">
-    <img src="score-h-1.png" alt="score-h-1" style="width: 48.5%; height: auto;">
-    <img src="score-h-2.png" alt="score-h-2" style="width: 48.5%; height: auto;">
-    <img src="score-i-1.png" alt="score-i-1" style="width: 100%; height: auto;">
-    <img src="score-j-1.png" alt="score-j-1" style="width: 100%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-a-1.png" alt="score-a-1" style="width: 31.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-a-2.png" alt="score-a-2" style="width: 31.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-a-3.png" alt="score-a-3" style="width: 31.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-b-1.jpeg" alt="score-b-1" style="width: 100%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-c-1.png" alt="score-c-1" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-d-1.png" alt="score-d-1" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-e-1.png" alt="score-e-1" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-f-1.png" alt="score-f-1" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-g-1.png" alt="score-g-1" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-g-2.png" alt="score-g-2" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-h-1.png" alt="score-h-1" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-h-2.png" alt="score-h-2" style="width: 48.5%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-i-1.png" alt="score-i-1" style="width: 100%; height: auto;">
+    <img src="blogs/composition-6-2-25/score-j-1.png" alt="score-j-1" style="width: 100%; height: auto;">
 </div>
 
 
