@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Post</title>
     <link rel="stylesheet" href="/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         #blog-content h1 {
             font-size: 2.5em;
@@ -28,6 +27,18 @@
     </section>
 
     <script src="/header.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const params = new URLSearchParams(window.location.search);
@@ -42,7 +53,6 @@
                         return response.text();
                     })
                     .then(md => {
-                        // Extract frontmatter and content
                         const frontmatterMatch = md.match(/^---([\s\S]*?)---/);
                         let content = md;
                         let title = postSlug.replace(/-/g, ' ');
@@ -75,7 +85,13 @@
                             headerHTML += `<p class="post-date">Published on ${formattedDate}</p>`;
                         }
 
-                        document.getElementById('blog-content').innerHTML = headerHTML + marked.parse(content);
+                        const blogContent = document.getElementById('blog-content');
+                        blogContent.innerHTML = headerHTML + marked.parse(content);
+                        
+                        // Re-render math with MathJax
+                        if (window.MathJax) {
+                            MathJax.typesetPromise([blogContent]).catch((err) => console.log(err.message));
+                        }
                     })
                     .catch(error => {
                         document.getElementById('blog-content').innerHTML = `<p>Error loading post: ${error.message}</p>`;
