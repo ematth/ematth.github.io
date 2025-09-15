@@ -1,7 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
 
-html {
+html, body {
     height: 100%;
+    cursor: url('assets/icons/arrow.cur'), auto !important;
+}
+
+body.loading {
+    cursor: url('assets/icons/busy.ani') 16 16, wait;
 }
 
 /* General Body & Layout */
@@ -19,10 +24,12 @@ body {
 
 a {
     color: #0000FF;
+    cursor: url('assets/icons/link.cur'), auto !important;
 }
 
 a:visited {
     color: #800080;
+    cursor: url('assets/icons/link.cur'), auto !important;
 }
 
 h1, h2, h3 {
