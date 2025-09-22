@@ -1,4 +1,58 @@
-[  
+[ 
+  {
+    "id": "thesis",
+    "title": "Thesis: Text Recaptioning for Audio Diffusion Models",
+    "technologies": "Python, Jupyter Notebook, PyTorch",
+    "advisor": "Paris Smaragdis",
+    "year": "August 2024 - May 2025",
+    "description": "M.S. Thesis on output variability in audio diffusion models. Investigates the difference in output quality and diversity when using reworded prompts for text-to-audio generation. Experiments are performed using the AudioLDM and MusicGen models, with a focus on sound effect generation.",
+    "links": [
+      {
+        "text": "Paper",
+        "url": "../assets/documents/matthews-thesis.pdf"
+      },
+      {
+        "text": "GitHub (a little messy... will clean up later)",
+        "url": "https://github.com/ematth/ms-research"
+      }
+    ]
+  }, 
+  {
+    "id": "generative-ai-as-in-art",
+    "title": "Generative AI as (in) Art",
+    "technologies": "ChatGPT, DALL·E 3, Midjourney, Stable Diffusion, Google Gemini",
+    "advisor": "Ben Grosser",
+    "year": "January - May 2024",
+    "description": "Course work and final project completed for ARTS 444: Generative AI as (in) Art. Explored the use of generative AI tools in the context of art-making, with a focus on ethical considerations and the implications of AI-generated content in contemporary art practices. My work culminated in the final project \"Statistically Realistic Music\", which I wrote about in the blog post linked below. ",
+    "links": [
+      {
+        "text": "Final Project: Statistically Realistic Music",
+        "url": "../blog-post.html?post=composition-6-2-25"
+      },
+      {
+        "text": "GitHub",
+        "url": "https://github.com/ematth/ARTS-444"
+      }
+    ]
+  },
+  {
+    "id": "deep-in-the-web",
+    "title": "Deep in the Web",
+    "technologies": "Python, Jupyter Notebook",
+    "collaborators": "Vikram Ramavarapu, Krishnaveni Unnikrishnan",
+    "year": "November - December 2024",
+    "description": "Research project for CS 412: Intro to Data Mining. A multi-network analysis of data from the Child Mind Institute's [Health Brain Network (HBN) dataset.](https://fcon_1000.projects.nitrc.org/indi/cmi_healthy_brain_network/Data.html), proving the efficacy of using machine learning models to predict Problematic Internet Use (PIU) in children and adolescents.",
+    "links": [
+      {
+        "text": "Paper",
+        "url": "../assets/documents/cs412-report.pdf"
+      },
+      {
+        "text": "GitHub",
+        "url": "https://github.com/ematth/DeepInTheWeb"
+      }
+    ]
+  },
   {
     "id": "bayesian-grading",
     "title": "A Case for Bayesian Grading",
@@ -28,11 +82,7 @@
     "links": [
       {
         "text": "Paper",
-        "url": "/files/cs444-report.pdf"
-      },
-      {
-        "text": "Professor Page",
-        "url": "https://grainger.illinois.edu/about/directory/faculty/slazebni"
+        "url": "../assets/documents/cs444-report.pdf"
       }
     ]
   },
@@ -46,6 +96,10 @@
     "description": "Research project for CS 545: Machine Learning for Signal Processing. Explores the use of K-Nearest-Neighbors Interpolation for the purpose of image upsampling. Implementation expanded to include dynamic aspect ratio upsampling and selective upsampling to reduce computation time for images with solid-color regions.",
     "links": [
       {
+        "text": "Paper",
+        "url": "../assets/documents/cs545-report.pdf"
+      },
+      {
         "text": "GitHub",
         "url": "https://github.com/ematth/KNN-Classical-Upsampling"
       }
@@ -57,8 +111,12 @@
     "technologies": "HTML, CSS, Markdown, Github Pages",
     "advisors": "",
     "year": "May 2023",
-    "description": "Built with Hugo and designed using the XMIN theme. Read more about my journey through web development here.",
+    "description": "Built with Hugo and designed using the XMIN theme.",
     "links": [
+      {
+        "text": "Website",
+        "url": "https://ematth.dev/website-2023"
+      },
       {
         "text": "Hugo",
         "url": "https://gohugo.io/"
@@ -71,7 +129,7 @@
   },
   {
     "id": "senior-capstone",
-    "title": "Senior Capstone: Transcribing Monophonic Audio with Deep-Learning Data",
+    "title": "Undergraduate Capstone: Transcribing Monophonic Audio with Deep-Learning Data",
     "technologies": "MIDI/MusicXML, MuseScore, Python",
     "advisors": "Zuofu Cheng",
     "collaborators": "Kevin Zhou",
@@ -79,12 +137,8 @@
     "description": "Combined senior capstone project with Kevin Zhou. Our main goal was to implement a machine-learning model for rudimentary conversion of raw audio recordings into readable sheet music. I created the database of examples to be recorded and handled the business side of the study, and Kevin put together the webapp SingSong for collecting recording data.",
     "links": [
       {
-        "text": "Website",
-        "url": "https://singsong.gatsbyjs.io/"
-      },
-      {
         "text": "Presentation",
-        "url": "/files/capstone.pdf"
+        "url": "../assets/documents/capstone.pdf"
       },
       {
         "text": "Advisor Page",
@@ -100,16 +154,7 @@
     "collaborators": "Majeed Akinlusi, Zeyang \"Hans\" Zhang, Kevin Zhou",
     "year": "Spring 2022",
     "description": "Final project for CS 411; database webapp designed for comparing schedules and absences between members of an organization or group. Inspiration taken from scheduling sites like When2meet and Doodle.",
-    "links": [
-      {
-        "text": "When2meet",
-        "url": "https://www.when2meet.com/"
-      },
-      {
-        "text": "Doodle",
-        "url": "https://doodle.com/en/"
-      }
-    ]
+    "links": []
   },
   {
     "id": "dissco",
@@ -183,7 +228,7 @@
       },
       {
         "text": "PYGHACK 2020",
-        "url": "https://pyghack2020.devpost.com/"
+        "url": "https://pyghack2020.devpost.com/project-gallery"
       }
     ]
   },
