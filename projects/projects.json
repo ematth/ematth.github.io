@@ -1,5 +1,45 @@
 [ 
   {
+    "id": "pyroomstudio",
+    "title": "PyRoomStudio: A 3D Acoustic Room Simulator",
+    "technologies": "Python, PyRoomAcoustics, PyGame, PyOpenGL",
+    "collaborators": "William Chen",
+    "year": "February 2025 - Present",
+    "description": "An ongoing project to create a 3D room simulator for acoustic research and education. Built as a GUI wrapper for the PyRoomAcoustics library, with audio simulation and rendering functionality using PyGame and PyOpenGL. Features include real-time audio rendering, room geometry manipulation, and source/receiver placement. GitHub link will be provided soon, as we're working to make the repository open source.",
+    "links": [{"text": "GitHub (Coming soon)", "url": "#"}]
+  },
+  {
+    "id": "mmd",
+    "title": "Multi-Modal Diffusion Project",
+    "technologies": "Python, Jupyter Notebook, Diffusers, Transformers, PyTorch, Data Visualization",
+    "collaborators": "Jay Mahajan, Jiya Patidar",
+    "advisors": "Alexander Schwing", 
+    "year": "March 2025 - Present",
+    "description": "An ongoing research project exploring alignment in latent features between image and audio generative models. Originally started as a course project for CS 598 GMA: Generative Audio Models, and now being expanded into a larger research endeavor. We're working on writing a paper to submit to a conference, so documentation/code will be made public at a later date.",
+    "links": []
+  },  
+  {
+    "id": "pips",
+    "title": "Pips/Dominoes Puzzle Framework",
+    "technologies": "Python, Webscraping",
+    "year": "August 2025 - Present",
+    "description": "A vanilla Python3 framework for solving and generating puzzles based on the NYTGames \"Pips\" puzzle. Includes a webscraper for collecting and formatting puzzles from the NYTGames website.",
+    "links": [
+      {
+        "text": "GitHub",
+        "url": "https://github.com/ematth/pips"
+      }
+    ]
+  }, 
+  {
+    "id": "conversational-ai",
+    "title": "Untitled Stealth Conversational AI Project",
+    "collaborators": "Mark Bauer, Tyler Lee, Quinn Ouyang",
+    "year": "August 2025 - Present",
+    "description": "An ongoing stealth project focused on building a real-time conversation agent with desktop screen context. More details to come at a later date.",
+    "links": []
+  },
+  {
     "id": "thesis",
     "title": "Thesis: Text Recaptioning for Audio Diffusion Models",
     "technologies": "Python, Jupyter Notebook, PyTorch",
@@ -36,12 +76,26 @@
     ]
   },
   {
+    "id": "tileify",
+    "title": "Tileify",
+    "technologies": "Python, Pillow",
+    "collaborators": "Rutvik Choudhary",
+    "year": "March 2025",
+    "description": "Refined script for generating Discord-compatible image/GIF emojis from larger files. Originally designed by Rutvik Choudhary, I improved the codebase to include better error handling, support for more file types, and a more user-friendly command-line interface.",
+    "links": [
+      {
+        "text": "GitHub",
+        "url": "https://github.com/ematth/tileify"
+      }
+    ]
+  }, 
+  {
     "id": "deep-in-the-web",
     "title": "Deep in the Web",
     "technologies": "Python, Jupyter Notebook",
     "collaborators": "Vikram Ramavarapu, Krishnaveni Unnikrishnan",
     "year": "November - December 2024",
-    "description": "Research project for CS 412: Intro to Data Mining. A multi-network analysis of data from the Child Mind Institute's [Health Brain Network (HBN) dataset.](https://fcon_1000.projects.nitrc.org/indi/cmi_healthy_brain_network/Data.html), proving the efficacy of using machine learning models to predict Problematic Internet Use (PIU) in children and adolescents.",
+    "description": "Research project for CS 412: Intro to Data Mining. A multi-network analysis of data from the Child Mind Institute's Health Brain Network (HBN) dataset., proving the efficacy of using machine learning models to predict Problematic Internet Use (PIU) in children and adolescents.",
     "links": [
       {
         "text": "Paper",
@@ -54,11 +108,40 @@
     ]
   },
   {
+    "id": "issbsimr",
+    "title": "I still see (Bad) Shadows in my Room: Analyzing and Detecting Lighting Inconsistencies in AI-Generated Images",
+    "technologies": "Python, Jupyter Notebook",
+    "collaborators": "Dwip Dalal, Adheesh Juvekar, Jiachen Tu",
+    "year": "November - December 2024",
+    "description": "Research project for CS 543: Computer Vision. Analyzes the prevalence of lighting and shadow inconsistencies in AI-generated images, and implements a machine learning model to detect said inconsistencies. Lighting and shadow information was captured with DiffusionLight, a generative model for inpainting image information on a chrome sphere.",
+    "links": [
+      {
+        "text": "Paper",
+        "url": "../assets/documents/cs543-report.pdf"
+      },
+      {
+        "text": "GitHub",
+        "url": "https://github.com/ematth/IssBSimR"
+      }
+    ]
+  },
+  {
+    "id": "liszt",
+    "title": "LISZT: Lightweight Interface for Supercollider Zen Tasking",
+    "technologies": "Python, SC3nb, Urwid",
+    "year": "October 2024 - December 2024",
+    "description": "A terminal-based interface for programming and running SuperCollider tasks using the SC3nb library. This project aims to provide a REPL-like approach for live coding and playback outside of the SuperCollider IDE. Built as a final project for MUS 499C: Creating Audio Coding with SuperCollider, taught by Eli Fieldsteel.",
+    "links": [{
+      "text": "GitHub",
+      "url": "https://github.com/ematth/LISZT"
+    }]
+  },
+  {
     "id": "bayesian-grading",
     "title": "A Case for Bayesian Grading",
     "technologies": "Python, Jupyter Notebook",
     "advisors": "Craig B. Zilles, Matthew West",
-    "collaborators": "Yuxuan Chen, Chenyan (Victor) Zhao",
+    "collaborators": "Yuxuan Chen, Chenyan \"Victor\" Zhao",
     "year": "May 2024",
     "description": "Research project for CS 500: Topics in Computer Education Research. Simulating student grades as bayesian probabilities for analysis on trustworthiness. A combination of proctored (UIUC CBTF) and non-proctored scores were used in the simulation process. Accepted to SIGCSE Virtual 2024!",
     "links": [
@@ -76,7 +159,6 @@
     "id": "optical-music-recognition",
     "title": "Optical Music Recognition for LilyPond File Generation",
     "technologies": "Python, Jupyter Notebook",
-    "advisors": "Svetlana Lazebnik",
     "year": "May 2024",
     "description": "Graduate project for CS 444: Machine Learning for Computer Vision. Analysis of state-of-the-art work in Optical Music Recognition (OMR) with respect to several digital music notation formats. LilyPond is deemed to be a reasonable format for use in OMR given its current structure and underlying functionality for batch exporting.",
     "links": [
@@ -107,14 +189,14 @@
   },
   {
     "id": "personal-website",
-    "title": "Personal Website",
+    "title": "Old Personal Website",
     "technologies": "HTML, CSS, Markdown, Github Pages",
     "advisors": "",
     "year": "May 2023",
     "description": "Built with Hugo and designed using the XMIN theme.",
     "links": [
       {
-        "text": "Website",
+        "text": "Old Website (archived)",
         "url": "https://ematth.dev/website-2023"
       },
       {
@@ -239,7 +321,7 @@
     "advisors": "",
     "collaborators": "Beth Fineberg, Cale Wolf, Kevin Zhou",
     "year": "Fall 2020",
-    "description": "Final project for CS 225; makes use of graph traversal algorithms to find the kth degrees of a given Spotify artist.",
+    "description": "Final project for CS 225: Data Structures. Makes use of graph traversal algorithms to find the kth degrees (nearest artist) to a given Spotify artist.",
     "links": []
   },
   {
@@ -250,6 +332,13 @@
     "collaborators": "Kevin Zhou",
     "year": "November - December 2019",
     "description": "Final project for CS 125: Intro to Computer Science, (now CS 124: Intro to Computer Science I). Android app consisting of several minigames in the style of Nintendo's WarioWare. Players are rewarded with coins which they can use to purchase trophies (Bitmojis of the CS 125 course staff). This app made the list of \"Impressive Projects\" at the CS 125 Final Project Fair.",
+    "links": []
+  },
+  {
+    "id": "prior",
+    "title": "Early Work",
+    "year" : "Before August 2019",
+    "description": "A fair amount of HTML/CSS programming, GameMaker projects, and a really basic Minecraft mod in Java. My high school didn't offer any computer science courses at the time, so I picked up Java and C++ through summer college courses before entering UIUC.",
     "links": []
   }
 ] 
