@@ -441,7 +441,7 @@ function openInternetExplorerWindow() {
         // Reload the iframe to reinitialize the animation
         const ieFrame = document.getElementById('ie-frame');
         if (ieFrame) {
-            const currentSrc = ieFrame.src || 'http://localhost:8000/ematth.dev/index.html';
+            const currentSrc = ieFrame.src || 'http://ematth.dev/ematth.dev/index.html';
             ieFrame.src = currentSrc;
         }
         return;
@@ -700,8 +700,8 @@ if (ieFrame && ieBack && ieForward && ieRefresh && ieHome) {
     
     // Home button
     ieHome.addEventListener('click', () => {
-        ieFrame.src = 'http://localhost:8000/ematth.dev/index.html';
-        ieAddress.value = 'http://localhost:8000/ematth.dev/index.html';
+        ieFrame.src = 'http://ematth.dev/ematth.dev/index.html';
+        ieAddress.value = 'http://ematth.dev/ematth.dev/index.html';
     });
     
     // Update address bar when iframe navigates
