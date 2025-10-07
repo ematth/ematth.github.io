@@ -7,26 +7,24 @@ html {
     overflow-y: auto;
 }
 
-body {
-    min-height: 100%;
-    cursor: url('assets/icons/arrow.cur'), auto !important;
-    overflow: visible;
-}
-
-body.loading {
-    cursor: url('assets/icons/busy.ani') 16 16, wait;
-}
-
 /* General Body & Layout */
 body {
     font-family: Verdana, Arial, sans-serif;
     font-size: 12px;
     background-image: url('assets/images/space1.webp');
     color: #000000;
-    margin: 20px;
+    margin: 0 auto;
     border: 2px outset #000000;
     padding: 10px;
     box-sizing: border-box;
+    max-width: 600px;
+    min-height: 100%;
+    cursor: url('assets/icons/arrow.cur'), auto !important;
+    overflow-x: hidden;
+}
+
+body.loading {
+    cursor: url('assets/icons/busy.ani') 16 16, wait;
 }
 
 a {
