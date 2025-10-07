@@ -21,15 +21,6 @@
       "openFunction": "openWelcomeTxt"
     },
     {
-      "name": "About Me.html",
-      "icon": "📄",
-      "type": "file",
-      "openFunction": "openHTMLDocument",
-      "documentId": "window-about-me",
-      "documentTitle": "About Me",
-      "documentSrc": "documents/about-me.html"
-    },
-    {
       "name": "Updates.html",
       "icon": "📄",
       "type": "file",
