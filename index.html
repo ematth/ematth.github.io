@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evan Matthews - Windows 2000</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        // Redirect touch screen devices to mobile-friendly version
+        (function() {
+            var isTouchDevice = (
+                ('ontouchstart' in window) ||
+                (navigator.maxTouchPoints > 0) ||
+                (navigator.msMaxTouchPoints > 0)
+            );
+            
+            if (isTouchDevice) {
+                window.location.href = 'https://ematth.dev/ematth.dev';
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Desktop -->
