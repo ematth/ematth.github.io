@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Documents</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 11px;
+            background: white;
+            overflow: hidden;
+        }
+        
+        .explorer-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            background: #D4D0C8;
+            border-bottom: 1px solid #808080;
+            gap: 2px;
+        }
+        
+        .toolbar-button {
+            width: 24px;
+            height: 22px;
+            background: #D4D0C8;
+            border: 1px solid;
+            border-color: #ffffff #404040 #404040 #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+        
+        .toolbar-button:active {
+            border-color: #404040 #ffffff #ffffff #404040;
+        }
+        
+        .address-bar {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            margin-left: 8px;
+        }
+        
+        .address-bar label {
+            margin-right: 4px;
+        }
+        
+        .address-bar select {
+            flex: 1;
+            height: 20px;
+            border: 1px solid;
+            border-color: #808080 #ffffff #ffffff #808080;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 11px;
+            background: white;
+        }
+        
+        /* Main content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 120px;
+            background: #D4D0C8;
+            border-right: 1px solid #808080;
+            padding: 8px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(0, 0, 128, 0.1);
+        }
+        
+        .sidebar-item.selected {
+            background: rgba(0, 0, 128, 0.2);
+        }
+        
+        .sidebar-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+        
+        /* File list area */
+        .file-area {
+            flex: 1;
+            background: white;
+            padding: 8px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .file-item, .folder-item {
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .file-item:hover, .folder-item:hover {
+            background: #316AC5;
+            color: white;
+        }
+        
+        .file-item.selected, .folder-item.selected {
+            background: #316AC5;
+            color: white;
+        }
+        
+        .item-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+            font-size: 14px;
+        }
+        
+        .folder-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+        }
+        
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            padding: 2px 8px;
+            background: #D4D0C8;
+            border-top: 1px solid #ffffff;
+            font-size: 11px;
+            height: 20px;
+        }
+        
+        .folder-tree {
+            padding-left: 16px;
+        }
+        
+        .folder-tree-item {
+            display: flex;
+            align-items: center;
+            padding: 1px 2px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .folder-tree-item:hover {
+            background: #E5E5E5;
+        }
+        
+        .folder-expand {
+            width: 12px;
+            margin-right: 2px;
+            font-size: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="explorer-container">
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="toolbar-button" title="Back">←</button>
+            <button class="toolbar-button" title="Forward">→</button>
+            <button class="toolbar-button" title="Up">↑</button>
+            <div class="address-bar">
+                <label>Address</label>
+                <select id="address-dropdown">
+                    <option>My Documents</option>
+                    <option>Desktop</option>
+                    <option>My Computer</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-item selected" data-folder="my-documents">
+                    <div class="sidebar-icon">📄</div>
+                    <div>My Documents</div>
+                </div>
+                <div class="sidebar-item" data-folder="desktop">
+                    <div class="sidebar-icon">🖥️</div>
+                    <div>Desktop</div>
+                </div>
+                <div class="sidebar-item" data-folder="my-network">
+                    <div class="sidebar-icon">🌐</div>
+                    <div>My Network Places</div>
+                </div>
+                <div class="sidebar-item" data-folder="recycle-bin">
+                    <div class="sidebar-icon">🗑️</div>
+                    <div>Recycle Bin</div>
+                </div>
+            </div>
+            
+            <!-- File listing area -->
+            <div class="file-area" id="file-area">
+                <div class="folder-item" data-folder="Work Projects" data-type="folder">
+                    <div class="folder-icon">📁</div>
+                    <div>Work Projects</div>
+                </div>
+                <div class="folder-item" data-folder="Photos" data-type="folder">
+                    <div class="folder-icon">📁</div>
+                    <div>Photos</div>
+                </div>
+                <div class="folder-item" data-folder="Music" data-type="folder">
+                    <div class="folder-icon">📁</div>
+                    <div>Music</div>
+                </div>
+                <div class="file-item" data-type="file" data-open-function="openWelcomeTxt">
+                    <div class="item-icon">📄</div>
+                    <div>Welcome.txt</div>
+                </div>
+                <div class="file-item" data-type="file" data-open-function="openHTMLDocument" data-doc-id="window-example-doc" data-doc-title="Example Document" data-doc-src="documents/example-document.html">
+                    <div class="item-icon">📄</div>
+                    <div>Example.html</div>
+                </div>
+                <div class="file-item" data-type="file" data-open-function="openHTMLDocument" data-doc-id="window-about-me" data-doc-title="About Me" data-doc-src="documents/about-me.html">
+                    <div class="item-icon">📄</div>
+                    <div>About Me.html</div>
+                </div>
+                <div class="file-item" data-type="file">
+                    <div class="item-icon">📄</div>
+                    <div>Resume.doc</div>
+                </div>
+                <div class="file-item" data-type="file">
+                    <div class="item-icon">📄</div>
+                    <div>Notes.txt</div>
+                </div>
+                <div class="file-item" data-type="file">
+                    <div class="item-icon">📊</div>
+                    <div>Budget.xls</div>
+                </div>
+                <div class="file-item" data-type="file" data-url="updates.html">
+                    <div class="item-icon">📕</div>
+                    <div>Updates.pdf</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status bar -->
+        <div class="status-bar">
+            <span id="status-text">10 objects</span>
+        </div>
+    </div>
+    
+    <script>
+        // Load folder structure from JSON file
+        let documentStructure = null;
+        let currentPath = []; // Track current folder path
+        
+        // Load the structure with cache-busting
+        fetch('documents/structure.json?t=' + Date.now())
+            .then(response => response.json())
+            .then(data => {
+                documentStructure = data;
+                displayCurrentFolder();
+            })
+            .catch(error => {
+                console.error('Error loading document structure:', error);
+                loadDefaultContent();
+            });
+        
+        // Navigate to a folder path
+        function displayCurrentFolder() {
+            let currentData = documentStructure;
+            
+            // Navigate to current path
+            for (const folderName of currentPath) {
+                const folder = currentData.folders.find(f => f.name === folderName);
+                if (folder && folder.contents) {
+                    // Convert contents array to folders/files structure
+                    currentData = {
+                        folders: folder.contents.filter(item => item.type === 'folder'),
+                        files: folder.contents.filter(item => item.type === 'file')
+                    };
+                }
+            }
+            
+            displayDocuments(currentData);
+            updateAddressBar();
+        }
+        
+        // Up button navigation
+        const upButton = document.querySelector('.toolbar-button[title="Up"]');
+        if (upButton) {
+            upButton.addEventListener('click', () => {
+                if (currentPath.length > 0) {
+                    currentPath.pop();
+                    displayCurrentFolder();
+                }
+            });
+        }
+        
+        // Handle sidebar navigation
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        const fileArea = document.getElementById('file-area');
+        const statusText = document.getElementById('status-text');
+        const addressDropdown = document.getElementById('address-dropdown');
+        
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const folder = item.dataset.folder;
+                
+                // Navigate to different explorer locations using parent window
+                if (folder === 'desktop' && window.parent && window.parent.openExplorerWindow) {
+                    window.parent.openExplorerWindow('desktop', 'Desktop', 'desktop.html');
+                    return;
+                }
+                if (folder === 'my-network' && window.parent && window.parent.openExplorerWindow) {
+                    window.parent.openExplorerWindow('my-network', 'My Network Places', 'mynetwork.html');
+                    return;
+                }
+                if (folder === 'recycle-bin' && window.parent && window.parent.openExplorerWindow) {
+                    window.parent.openExplorerWindow('recycle-bin', 'Recycle Bin', 'recyclebin.html');
+                    return;
+                }
+                
+                // Local navigation for My Documents
+                sidebarItems.forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                addressDropdown.value = item.textContent.trim();
+                currentPath = [];
+                loadFolder(folder);
+            });
+        });
+        
+        // Handle file/folder selection
+        let selectedItem = null;
+        
+        function addItemListeners() {
+            const items = document.querySelectorAll('.file-item, .folder-item');
+            items.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (selectedItem) {
+                        selectedItem.classList.remove('selected');
+                    }
+                    item.classList.add('selected');
+                    selectedItem = item;
+                });
+                
+                item.addEventListener('dblclick', (e) => {
+                    if (item.dataset.type === 'folder') {
+                        // Navigate into the folder
+                        currentPath.push(item.dataset.folder);
+                        displayCurrentFolder();
+                    } else if (item.dataset.openFunction) {
+                        // Call parent window function with parameters if available
+                        console.log('Attempting to call function:', item.dataset.openFunction);
+                        
+                        try {
+                            const targetWindow = window.parent || window.top;
+                            const functionName = item.dataset.openFunction;
+                            
+                            if (targetWindow && typeof targetWindow[functionName] === 'function') {
+                                // Check if we have parameters for the function
+                                if (item.dataset.docId && item.dataset.docTitle && item.dataset.docSrc) {
+                                    // Call with parameters
+                                    targetWindow[functionName](
+                                        item.dataset.docId,
+                                        item.dataset.docTitle,
+                                        item.dataset.docSrc
+                                    );
+                                } else {
+                                    // Call without parameters
+                                    targetWindow[functionName]();
+                                }
+                            } else {
+                                console.error('Function not found on parent window');
+                            }
+                        } catch (err) {
+                            console.error('Error calling parent function:', err);
+                        }
+                    } else if (item.dataset.url) {
+                        // Open URL for files with data-url attribute
+                        window.open(item.dataset.url, '_blank');
+                    }
+                });
+            });
+        }
+        
+        addItemListeners();
+        
+        // Display documents from API data
+        function displayDocuments(data) {
+            let content = '';
+            let count = 0;
+            
+            // Render folders
+            if (data.folders) {
+                data.folders.forEach(folder => {
+                    content += `
+                        <div class="folder-item" data-folder="${folder.name}" data-type="folder">
+                            <div class="folder-icon">${folder.icon || '📁'}</div>
+                            <div>${folder.name}</div>
+                        </div>
+                    `;
+                    count++;
+                });
+            }
+            
+            // Render files
+            if (data.files) {
+                data.files.forEach(file => {
+                    const urlAttr = file.url ? ` data-url="${file.url}"` : '';
+                    const functionAttr = file.openFunction ? ` data-open-function="${file.openFunction}"` : '';
+                    const docIdAttr = file.documentId ? ` data-doc-id="${file.documentId}"` : '';
+                    const docTitleAttr = file.documentTitle ? ` data-doc-title="${file.documentTitle}"` : '';
+                    const docSrcAttr = file.documentSrc ? ` data-doc-src="${file.documentSrc}"` : '';
+                    content += `
+                        <div class="file-item" data-type="file"${urlAttr}${functionAttr}${docIdAttr}${docTitleAttr}${docSrcAttr}>
+                            <div class="item-icon">${file.icon || '📄'}</div>
+                            <div>${file.name}</div>
+                        </div>
+                    `;
+                    count++;
+                });
+            }
+            
+            fileArea.innerHTML = content;
+            statusText.textContent = `${count} object${count !== 1 ? 's' : ''}`;
+            addItemListeners();
+        }
+        
+        // Update address bar to show current path
+        function updateAddressBar() {
+            const pathText = currentPath.length > 0
+                ? `My Documents\\${currentPath.join('\\')}`
+                : 'My Documents';
+            addressDropdown.value = pathText;
+        }
+        
+        // Load different folders
+        function loadFolder(folder) {
+            let content = '';
+            let count = 0;
+            
+            switch(folder) {
+                case 'my-documents':
+                    currentPath = [];
+                    displayCurrentFolder();
+                    return;
+                case 'desktop':
+                    content = `
+                        <div class="folder-item" data-folder="Shortcuts" data-type="folder">
+                            <div class="folder-icon">📁</div>
+                            <div>Shortcuts</div>
+                        </div>
+                        <div class="file-item" data-type="file">
+                            <div class="item-icon">🖼️</div>
+                            <div>Background.bmp</div>
+                        </div>
+                    `;
+                    count = 2;
+                    break;
+                case 'my-computer':
+                    content = `
+                        <div class="folder-item" data-folder="C:" data-type="folder">
+                            <div class="folder-icon">💾</div>
+                            <div>Local Disk (C:)</div>
+                        </div>
+                        <div class="folder-item" data-folder="D:" data-type="folder">
+                            <div class="folder-icon">💿</div>
+                            <div>CD Drive (D:)</div>
+                        </div>
+                    `;
+                    count = 2;
+                    break;
+                case 'my-network':
+                    content = `
+                        <div class="file-item" data-type="file">
+                            <div class="item-icon">🌐</div>
+                            <div>Network Places</div>
+                        </div>
+                    `;
+                    count = 1;
+                    break;
+            }
+            
+            fileArea.innerHTML = content;
+            statusText.textContent = `${count} object${count !== 1 ? 's' : ''}`;
+            addItemListeners();
+        }
+        
+        function loadSubfolder(folderName) {
+            if (!documentStructure) return;
+            
+            // Navigate into the folder
+            currentPath.push(folderName);
+            
+            // Find the folder in the structure
+            let currentLocation = documentStructure;
+            let folderData = null;
+            
+            // Navigate through the path
+            for (let i = 0; i < currentPath.length; i++) {
+                const pathPart = currentPath[i];
+                const folders = currentLocation.folders || [];
+                folderData = folders.find(f => f.name === pathPart);
+                
+                if (!folderData) {
+                    // Folder not found, show empty
+                    fileArea.innerHTML = '<div class="file-item"><div class="item-icon">❌</div><div>Folder not found</div></div>';
+                    statusText.textContent = '0 objects';
+                    return;
+                }
+                
+                currentLocation = folderData;
+            }
+            
+            // Render the folder contents
+            let content = '';
+            let count = 0;
+            
+            if (folderData && folderData.contents) {
+                folderData.contents.forEach(item => {
+                    if (item.type === 'folder') {
+                        content += `
+                            <div class="folder-item" data-folder="${item.name}" data-type="folder">
+                                <div class="folder-icon">${item.icon || '📁'}</div>
+                                <div>${item.name}</div>
+                            </div>
+                        `;
+                    } else {
+                        const urlAttr = item.url ? ` data-url="${item.url}"` : '';
+                        const functionAttr = item.openFunction ? ` data-open-function="${item.openFunction}"` : '';
+                        const docIdAttr = item.documentId ? ` data-doc-id="${item.documentId}"` : '';
+                        const docTitleAttr = item.documentTitle ? ` data-doc-title="${item.documentTitle}"` : '';
+                        const docSrcAttr = item.documentSrc ? ` data-doc-src="${item.documentSrc}"` : '';
+                        content += `
+                            <div class="file-item" data-type="file"${urlAttr}${functionAttr}${docIdAttr}${docTitleAttr}${docSrcAttr}>
+                                <div class="item-icon">${item.icon || '📄'}</div>
+                                <div>${item.name}</div>
+                            </div>
+                        `;
+                    }
+                    count++;
+                });
+            }
+            
+            fileArea.innerHTML = content || '<div class="file-item"><div class="item-icon">📂</div><div>Empty folder</div></div>';
+            statusText.textContent = `${count} object${count !== 1 ? 's' : ''}`;
+            addItemListeners();
+        }
+        
+        // Fallback to default content if JSON fails to load
+        function loadDefaultContent() {
+            const content = `
+                <div class="folder-item" data-folder="Default" data-type="folder">
+                    <div class="folder-icon">📁</div>
+                    <div>Default Folder</div>
+                </div>
+                <div class="file-item" data-type="file">
+                    <div class="item-icon">📄</div>
+                    <div>Default File.txt</div>
+                </div>
+            `;
+            fileArea.innerHTML = content;
+            statusText.textContent = '2 objects';
+            addItemListeners();
+        }
+        
+        // Click on empty area to deselect
+        fileArea.addEventListener('click', (e) => {
+            if (e.target === fileArea) {
+                if (selectedItem) {
+                    selectedItem.classList.remove('selected');
+                    selectedItem = null;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

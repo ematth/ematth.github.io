@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 11px;
+            background: white;
+            overflow: hidden;
+        }
+        
+        .explorer-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            background: #D4D0C8;
+            border-bottom: 1px solid #808080;
+            gap: 2px;
+        }
+        
+        .toolbar-button {
+            width: 24px;
+            height: 22px;
+            background: #D4D0C8;
+            border: 1px solid;
+            border-color: #ffffff #404040 #404040 #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+        
+        .toolbar-button:active {
+            border-color: #404040 #ffffff #ffffff #404040;
+        }
+        
+        .address-bar {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            margin-left: 8px;
+        }
+        
+        .address-bar label {
+            margin-right: 4px;
+        }
+        
+        .address-bar select {
+            flex: 1;
+            height: 20px;
+            border: 1px solid;
+            border-color: #808080 #ffffff #ffffff #808080;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 11px;
+            background: white;
+        }
+        
+        /* Main content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 120px;
+            background: #D4D0C8;
+            border-right: 1px solid #808080;
+            padding: 8px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(0, 0, 128, 0.1);
+        }
+        
+        .sidebar-item.selected {
+            background: rgba(0, 0, 128, 0.2);
+        }
+        
+        .sidebar-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+        
+        /* Desktop icons area */
+        .desktop-icons-area {
+            flex: 1;
+            background: white;
+            padding: 16px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 80px);
+            grid-auto-rows: 90px;
+            gap: 16px;
+            align-content: start;
+        }
+        
+        .desktop-icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            cursor: pointer;
+            text-align: center;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+        
+        .desktop-icon-item:hover {
+            background: rgba(0, 0, 128, 0.1);
+            border: 1px dotted #000080;
+        }
+        
+        .desktop-icon-item.selected {
+            background: rgba(0, 0, 128, 0.15);
+            border: 1px dotted #000080;
+        }
+        
+        .icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+        
+        .icon-label {
+            font-size: 11px;
+            word-wrap: break-word;
+            max-width: 70px;
+        }
+        
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            padding: 2px 8px;
+            background: #D4D0C8;
+            border-top: 1px solid #ffffff;
+            font-size: 11px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="explorer-container">
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="toolbar-button" title="Back">←</button>
+            <button class="toolbar-button" title="Forward">→</button>
+            <button class="toolbar-button" title="Up">↑</button>
+            <div class="address-bar">
+                <label>Address</label>
+                <select id="address-dropdown">
+                    <option>Desktop</option>
+                    <option>My Documents</option>
+                    <option>My Network Places</option>
+                    <option>Recycle Bin</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-item selected" data-folder="desktop">
+                    <div class="sidebar-icon">🖥️</div>
+                    <div>Desktop</div>
+                </div>
+                <div class="sidebar-item" data-folder="my-documents">
+                    <div class="sidebar-icon">📄</div>
+                    <div>My Documents</div>
+                </div>
+                <div class="sidebar-item" data-folder="my-network">
+                    <div class="sidebar-icon">🌐</div>
+                    <div>My Network Places</div>
+                </div>
+                <div class="sidebar-item" data-folder="recycle-bin">
+                    <div class="sidebar-icon">🗑️</div>
+                    <div>Recycle Bin</div>
+                </div>
+            </div>
+            
+            <!-- Desktop icons area -->
+            <div class="desktop-icons-area" id="icons-area">
+                <div class="desktop-icon-item" data-icon="computer" title="My Computer">
+                    <div class="icon">💻</div>
+                    <div class="icon-label">My Computer</div>
+                </div>
+                <div class="desktop-icon-item" data-icon="documents" title="My Documents">
+                    <div class="icon">📄</div>
+                    <div class="icon-label">My Documents</div>
+                </div>
+                <div class="desktop-icon-item" data-icon="network" title="My Network Places">
+                    <div class="icon">🌐</div>
+                    <div class="icon-label">My Network Places</div>
+                </div>
+                <div class="desktop-icon-item" data-icon="recycle" title="Recycle Bin">
+                    <div class="icon">🗑️</div>
+                    <div class="icon-label">Recycle Bin</div>
+                </div>
+                <div class="desktop-icon-item" data-icon="ie" title="Ematth.dev">
+                    <div class="icon">🌐</div>
+                    <div class="icon-label">Ematth.dev</div>
+                </div>
+                <div class="desktop-icon-item" data-icon="normal-view" title="Ematth.dev without the Windows 2000 Desktop">
+                    <div class="icon">🖼️</div>
+                    <div class="icon-label">Ematth.dev without the Windows 2000 Desktop</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status bar -->
+        <div class="status-bar">
+            <span id="status-text">6 objects</span>
+        </div>
+    </div>
+    
+    <script>
+        // Handle sidebar navigation
+        const sidebarItems = document.querySelectorAll('.sidebar-item');
+        
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const folder = item.dataset.folder;
+                
+                // Navigate to different explorer locations using parent window
+                if (folder === 'my-documents' && window.parent && window.parent.openExplorerWindow) {
+                    window.parent.openExplorerWindow('my-documents', 'My Documents', 'mydocuments.html');
+                    return;
+                }
+                if (folder === 'my-network' && window.parent && window.parent.openExplorerWindow) {
+                    window.parent.openExplorerWindow('my-network', 'My Network Places', 'mynetwork.html');
+                    return;
+                }
+                if (folder === 'recycle-bin' && window.parent && window.parent.openExplorerWindow) {
+                    window.parent.openExplorerWindow('recycle-bin', 'Recycle Bin', 'recyclebin.html');
+                    return;
+                }
+            });
+        });
+        
+        // Handle desktop icon clicks
+        let selectedIcon = null;
+        const desktopIcons = document.querySelectorAll('.desktop-icon-item');
+        
+        desktopIcons.forEach(icon => {
+            let clickCount = 0;
+            let clickTimer = null;
+            
+            icon.addEventListener('click', (e) => {
+                clickCount++;
+                
+                if (clickCount === 1) {
+                    clickTimer = setTimeout(() => {
+                        // Single click - select icon
+                        desktopIcons.forEach(i => i.classList.remove('selected'));
+                        icon.classList.add('selected');
+                        selectedIcon = icon;
+                        clickCount = 0;
+                    }, 300);
+                } else if (clickCount === 2) {
+                    // Double click - open window
+                    clearTimeout(clickTimer);
+                    clickCount = 0;
+                    
+                    const iconType = icon.dataset.icon;
+                    if (window.parent && window.parent.openIconWindow) {
+                        window.parent.openIconWindow(iconType);
+                    }
+                }
+            });
+        });
+        
+        // Click on empty area to deselect
+        const iconsArea = document.getElementById('icons-area');
+        iconsArea.addEventListener('click', (e) => {
+            if (e.target === iconsArea) {
+                if (selectedIcon) {
+                    selectedIcon.classList.remove('selected');
+                    selectedIcon = null;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #blog-content h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        .post-date {
+            font-size: 1.1em;
+            font-style: italic;
+            color: #888;
+            margin-bottom: 2em;
+        }
+    </style>
+</head>
+<body class="stretch-main">
+    <div id="header-placeholder"></div>
+
+    <section id="blog-content">
+        <!-- Markdown content will be loaded here -->
+    </section>
+
+    <script src="header.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log('=== BLOG POST DEBUG INFO ===');
+            console.log('Current URL:', window.location.href);
+            console.log('Protocol:', window.location.protocol);
+            console.log('Pathname:', window.location.pathname);
+            console.log('Search:', window.location.search);
+            
+            const params = new URLSearchParams(window.location.search);
+            const postSlug = params.get('post');
+            console.log('Post slug from params:', postSlug);
+
+            if (postSlug) {
+                const mdPath = `blogs/${postSlug}/index.md`;
+                const fullURL = new URL(mdPath, window.location.href).href;
+                console.log('Relative path:', mdPath);
+                console.log('Full URL to fetch:', fullURL);
+                console.log('Attempting fetch...');
+                
+                fetch(mdPath)
+                    .then(response => {
+                        console.log('Fetch response status:', response.status);
+                        console.log('Fetch response ok:', response.ok);
+                        console.log('Response URL:', response.url);
+                        if (!response.ok) {
+                            throw new Error(`Blog post not found (HTTP ${response.status}): ${mdPath}`);
+                        }
+                        return response.text();
+                    })
+                    .then(md => {
+                        console.log('Successfully fetched markdown, length:', md.length);
+                        console.log('First 100 chars:', md.substring(0, 100));
+                        
+                        const frontmatterMatch = md.match(/^---([\s\S]*?)---/);
+                        let content = md;
+                        let title = postSlug.replace(/-/g, ' ');
+                        let date = '';
+
+                        if (frontmatterMatch) {
+                            const frontmatterText = frontmatterMatch[1];
+                            content = md.substring(frontmatterMatch[0].length).trim();
+                            
+                            const titleMatch = frontmatterText.match(/title:\s*(.*)/);
+                            if (titleMatch && titleMatch[1]) {
+                                title = titleMatch[1].trim().replace(/^["']|["']$/g, '');
+                            }
+
+                            const dateMatch = frontmatterText.match(/date:\s*(.*)/);
+                            if (dateMatch && dateMatch[1]) {
+                                date = dateMatch[1].trim().replace(/^["']|["']$/g, '');
+                            }
+                        }
+
+                        document.title = title;
+                        
+                        let headerHTML = `<h1>${title}</h1>`;
+                        if (date) {
+                            const formattedDate = new Date(date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            headerHTML += `<p class="post-date">Published on ${formattedDate}</p>`;
+                        }
+
+                        const blogContent = document.getElementById('blog-content');
+                        blogContent.innerHTML = headerHTML + marked.parse(content);
+                        
+                        // Re-render math with MathJax
+                        if (window.MathJax) {
+                            MathJax.typesetPromise([blogContent]).catch((err) => console.log(err.message));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('=== ERROR OCCURRED ===');
+                        console.error('Error type:', error.name);
+                        console.error('Error message:', error.message);
+                        console.error('Error stack:', error.stack);
+                        
+                        const fullURL = new URL(`blogs/${postSlug}/index.md`, window.location.href).href;
+                        const debugInfo = `
+                            <h2>Debug Information</h2>
+                            <p><strong>Error:</strong> ${error.message}</p>
+                            <p><strong>Post slug:</strong> ${postSlug}</p>
+                            <p><strong>Current URL:</strong> ${window.location.href}</p>
+                            <p><strong>Protocol:</strong> ${window.location.protocol}</p>
+                            <p><strong>Attempted relative path:</strong> blogs/${postSlug}/index.md</p>
+                            <p><strong>Full URL attempted:</strong> ${fullURL}</p>
+                            <hr>
+                            <p><strong>Possible issues:</strong></p>
+                            <ul>
+                                <li>If protocol is "file:", you need to run a local web server</li>
+                                <li>Check browser console for CORS errors</li>
+                                <li>Verify the markdown file exists at the path shown above</li>
+                            </ul>
+                            <p><strong>Check the browser console (F12) for detailed error logs.</strong></p>
+                        `;
+                        document.getElementById('blog-content').innerHTML = debugInfo;
+                    });
+            } else {
+                document.getElementById('blog-content').innerHTML = "<p>No blog post specified.</p>";
+            }
+        });
+    </script>
+</body>
+</html>

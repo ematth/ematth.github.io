@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome.txt - Notepad</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            background: white;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* Main content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+            padding: 10px;
+        }
+        
+        .text-content {
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+        }
+        
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px 8px;
+            background: #ECE9D8;
+            border-top: 1px solid #ffffff;
+            font-size: 11px;
+            height: 20px;
+            font-family: Tahoma, Arial, sans-serif;
+        }
+        
+        /* Windows 2000 scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background-color: #D4D0C8;
+            border-left: 1px solid #808080;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: #D4D0C8;
+            border: 2px outset #D4D0C8;
+            border-color: #FFFFFF #404040 #404040 #FFFFFF;
+            min-height: 28px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #E0E0E0;
+        }
+        
+        ::-webkit-scrollbar-thumb:active {
+            border-style: inset;
+            border-color: #404040 #FFFFFF #FFFFFF #404040;
+        }
+        
+        ::-webkit-scrollbar-button:single-button {
+            background-color: #C0C0C0;
+            border-width: 1px;
+            border-style: solid;
+            border-color: #FFFFFF #000000 #000000 #FFFFFF;
+            width: 16px;
+            height: 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: block;
+        }
+        
+        ::-webkit-scrollbar-button:single-button:active {
+            border-color: #000000 #FFFFFF #FFFFFF #000000;
+            background-color: #808080;
+        }
+        
+        ::-webkit-scrollbar-button:single-button:vertical:decrement {
+            background-color: #C0C0C0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="7" height="4"><polygon points="3.5,0 0,4 7,4" fill="black"/></svg>');
+            background-size: 7px 4px;
+        }
+        
+        ::-webkit-scrollbar-button:single-button:vertical:increment {
+            background-color: #C0C0C0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="7" height="4"><polygon points="3.5,4 0,0 7,0" fill="black"/></svg>');
+            background-size: 7px 4px;
+        }
+        
+        ::-webkit-scrollbar-button:single-button:horizontal:decrement {
+            background-color: #C0C0C0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="7"><polygon points="0,3.5 4,0 4,7" fill="black"/></svg>');
+            background-size: 4px 7px;
+        }
+        
+        ::-webkit-scrollbar-button:single-button:horizontal:increment {
+            background-color: #C0C0C0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="7"><polygon points="4,3.5 0,0 0,7" fill="black"/></svg>');
+            background-size: 4px 7px;
+        }
+        
+        ::-webkit-scrollbar-corner {
+            background-color: #D4D0C8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main content -->
+        <div class="main-content">
+            <div class="text-content">Welcome to my website! 👋😄
+            <p>This is my portfolio website, showing off my scientific and creative works, as well as blogs, updates, and silly Python scripts.
+            <br>The bulk of the content is on "Ematth.dev", but I've also included some additional stuff in the PC- check out all the files!
+            <br>If you're wondering about the Windows 2000 theme- my first PC was my dad's old Dell laptop, and I used it mainly to play <i>3D Pinball: Space Cadet</i>, <i></i>Dino and Aliens</i>, and <i>Luxor</i>.
+            <br><i>(To this day, my dad still holds all the Luxor level records.)</i></p>
+        </div>
+        
+        <!-- Status bar -->
+        <div class="status-bar">
+            <span>Ln 1, Col 1</span>
+            <span>Windows (CRLF)</span>
+            <span>UTF-8</span>
+        </div>
+    </div>
+</body>
+</html>

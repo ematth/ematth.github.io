@@ -1,0 +1,43 @@
+{
+  "folders": [
+    {
+      "name": "Photos",
+      "icon": "📷",
+      "type": "folder",
+      "contents": []
+    },
+    {
+      "name": "Music",
+      "icon": "🎵",
+      "type": "folder",
+      "contents": []
+    }
+  ],
+  "files": [
+    {
+      "name": "Welcome.html",
+      "icon": "📄",
+      "type": "file",
+      "openFunction": "openWelcomeTxt"
+    },
+    {
+      "name": "About Me.html",
+      "icon": "📄",
+      "type": "file",
+      "openFunction": "openHTMLDocument",
+      "documentId": "window-about-me",
+      "documentTitle": "About Me",
+      "documentSrc": "documents/about-me.html"
+    },
+    {
+      "name": "Updates.html",
+      "icon": "📄",
+      "type": "file",
+      "openFunction": "openHTMLDocument",
+      "documentId": "window-updates",
+      "documentTitle": "Updates",
+      "documentSrc": "documents/updates.html"
+    }
+  ]
+}
+

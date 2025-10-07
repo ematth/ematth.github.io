@@ -3,64 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evan M. Matthews</title>
+    <title>Evan Matthews - Windows 2000</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body id="home">
-    <div id="header-placeholder"></div>
-
-    <section id="intro">
-        <div class="intro-content">
-            <h1>Welcome to my website!</h1>
-            <p><i>Slowly getting updates each week!</i></p>
-            <!-- You can add more introductory text or elements here -->
-        </div>
-        <!-- <div class="profile-picture-container">
-            <img src="assets/images/profile-placeholder.png" alt="Profile Picture" id="profilePic">
-            Replace with your actual profile picture URL
-        </div> -->
-    </section>
-
-    <section id="perlin-animation">
-        <canvas id="perlin-canvas"></canvas>
-    </section>
-
-    <script src="header.js"></script>
-    <script src="perlin.js"></script>
-
-    <section id="resume">
-        <h2>Resume</h2>
-        <div class="document-previews">
-            <div class="document-preview-box">
-                <h3>My Resume</h3>
-                <p>A concise summary of my professional experience, skills, and education. Click to view or download.</p>
-                <a href="assets/documents/Evan_Matthews_Resume.pdf" target="_blank" class="read-more">View Resume</a>
+<body>
+    <!-- Desktop -->
+    <div class="desktop">
+        <!-- Desktop Icons -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" data-icon="computer">
+                <img src="ICON2/77.png" alt="My Computer" class="icon-image">
+                <div class="icon-label">My Computer</div>
+            </div>
+            <div class="desktop-icon" data-icon="documents">
+                <img src="ICON2/101.png" alt="My Documents" class="icon-image">
+                <div class="icon-label">My Documents</div>
+            </div>
+            <div class="desktop-icon" data-icon="network">
+                <img src="ICON2/85.png" alt="My Network Places" class="icon-image">
+                <div class="icon-label">My Network<br>Places</div>
+            </div>
+            <div class="desktop-icon" data-icon="recycle">
+                <img src="ICON2/222.png" alt="Recycle Bin" class="icon-image">
+                <div class="icon-label">Recycle Bin</div>
+            </div>
+            <div class="desktop-icon" data-icon="ie">
+                <img src="ICON2/e.svg" alt="Internet Explorer" class="icon-image">
+                <div class="icon-label">Ematth.dev</div>
             </div>
         </div>
-    </section>
-
-    <section id="contact">
-        <h2>Connect With Me</h2>
-        <div class="social-links">
-            <a href="https://github.com/ematth" target="_blank" title="GitHub" class="social-link">
-                <img src="assets/icons/github-mark.svg" alt="GitHub Logo">
-            </a>
-
-            <a href="https://www.linkedin.com/in/ematth/" target="_blank" title="LinkedIn" class="social-link">
-                <img src="assets/icons/InBug-Black.png" alt="LinkedIn Logo">
-            </a>
-
-            <a href="https://instagram.com/evanmatthews_" title="Instagram" class="social-link">
-                <img src="assets/icons/black-instagram-icon.webp" alt="Instagram Logo">
-            </a> 
-
-            <!-- <a href="#" target="_blank" title="Twitter/X" class="social-link">
-                <img src="assets/icons/twitter.svg" alt="Twitter/X Logo">
-            </a> -->
-            <!-- Add more social links as needed -->
+        
+        <!-- Bottom left icon -->
+        <div class="desktop-icon bottom-left-icon" data-icon="normal-view">
+            <img src="ICON2/11.png" alt="Normal View" class="icon-image">
+            <div class="icon-label">Ematth.dev without the Windows 2000 Desktop</div>
         </div>
-    </section>
 
+        <!-- Windows -->
+        <div class="window ie-window" id="window1" style="left: 150px; top: 80px; width: 800px; height: 600px;">
+            <div class="title-bar">
+                <div class="title-bar-text">
+                    <img src="ICON2/e.svg" alt="IE" style="width: 16px; height: 16px; margin-right: 4px; vertical-align: middle;">
+                    Ematth.dev - Microsoft Internet Explorer
+                </div>
+                <div class="title-bar-controls">
+                    <button class="title-bar-button" aria-label="Minimize"></button>
+                    <button class="title-bar-button" aria-label="Maximize"></button>
+                    <button class="title-bar-button close-button" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="menu-bar">
+                    <span class="menu-item"><u>F</u>ile</span>
+                    <span class="menu-item"><u>E</u>dit</span>
+                    <span class="menu-item"><u>V</u>iew</span>
+                    <span class="menu-item">F<u>a</u>vorites</span>
+                    <span class="menu-item"><u>T</u>ools</span>
+                    <span class="menu-item"><u>H</u>elp</span>
+                </div>
+                <div class="ie-toolbar">
+                    <button class="ie-button" id="ie-back" title="Back">
+                        <span style="font-size: 14px;">←</span>
+                    </button>
+                    <button class="ie-button" id="ie-forward" title="Forward">
+                        <span style="font-size: 14px;">→</span>
+                    </button>
+                    <button class="ie-button" id="ie-stop" title="Stop">
+                        <span style="font-size: 12px;">✕</span>
+                    </button>
+                    <button class="ie-button" id="ie-refresh" title="Refresh">
+                        <span style="font-size: 14px;">↻</span>
+                    </button>
+                    <button class="ie-button" id="ie-home" title="Home">
+                        <span style="font-size: 12px;">🏠</span>
+                    </button>
+                    <div class="ie-address-bar">
+                        <label style="margin-right: 4px;">Address</label>
+                        <input type="text" id="ie-address" value="http://localhost:8000/ematth.dev/index.html" readonly>
+                    </div>
+                </div>
+                <iframe id="ie-frame" src="http://localhost:8000/ematth.dev/index.html" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <div class="window" id="window2" style="left: 200px; top: 120px; width: 500px; height: 400px; display: none;">
+            <div class="title-bar">
+                <div class="title-bar-text">My Computer</div>
+                <div class="title-bar-controls">
+                    <button class="title-bar-button" aria-label="Minimize"></button>
+                    <button class="title-bar-button" aria-label="Maximize"></button>
+                    <button class="title-bar-button close-button" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="menu-bar">
+                    <span class="menu-item"><u>F</u>ile</span>
+                    <span class="menu-item"><u>E</u>dit</span>
+                    <span class="menu-item"><u>V</u>iew</span>
+                    <span class="menu-item">F<u>a</u>vorites</span>
+                    <span class="menu-item"><u>T</u>ools</span>
+                    <span class="menu-item"><u>H</u>elp</span>
+                </div>
+                <div class="content-area">
+                    <p>Select an item to view its description.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <button class="start-button">
+            <img src="ICON2/185.png" alt="Start" class="start-icon">
+            <span class="start-text">Start</span>
+        </button>
+        <div class="taskbar-divider"></div>
+        <div class="taskbar-buttons">
+            <button class="taskbar-button active" data-window="window1">Ematth.dev - Microsoft Internet Explorer</button>
+        </div>
+        <div class="system-tray">
+            <div class="clock" id="clock">12:00 PM</div>
+        </div>
+    </div>
+
+    <!-- Start Menu -->
+    <div class="start-menu" id="start-menu">
+        <div class="start-menu-sidebar">
+            <div class="start-menu-logo">Windows<span class="start-menu-logo-bold">2000</span></div>
+        </div>
+        <div class="start-menu-items">
+            <div class="start-menu-item" data-action="programs">
+                <img src="ICON2/101.png" alt="Programs" class="start-menu-icon">
+                <span class="start-menu-text">Programs</span>
+                <span class="start-menu-arrow">▶</span>
+            </div>
+            <div class="start-menu-item" data-action="documents">
+                <img src="ICON2/101.png" alt="Documents" class="start-menu-icon">
+                <span class="start-menu-text">Documents</span>
+                <span class="start-menu-arrow">▶</span>
+            </div>
+            <div class="start-menu-item" data-action="settings">
+                <img src="ICON2/119.png" alt="Settings" class="start-menu-icon">
+                <span class="start-menu-text">Settings</span>
+                <span class="start-menu-arrow">▶</span>
+            </div>
+            <div class="start-menu-item" data-action="search">
+                <img src="ICON2/23.png" alt="Search" class="start-menu-icon">
+                <span class="start-menu-text">Search</span>
+                <span class="start-menu-arrow">▶</span>
+            </div>
+            <div class="start-menu-item" data-action="help">
+                <img src="ICON2/24.png" alt="Help" class="start-menu-icon">
+                <span class="start-menu-text">Help</span>
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item" data-action="run">
+                <img src="ICON2/166.png" alt="Run" class="start-menu-icon">
+                <span class="start-menu-text">Run...</span>
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item" data-action="shutdown">
+                <img src="ICON2/223.png" alt="Shut Down" class="start-menu-icon">
+                <span class="start-menu-text">Shut Down...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
-</html> 
+</html>

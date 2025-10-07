@@ -1,0 +1,424 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+html {
+    height: 100%;
+    cursor: url('assets/icons/arrow.cur'), auto !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    min-height: 100%;
+    cursor: url('assets/icons/arrow.cur'), auto !important;
+    overflow: visible;
+}
+
+body.loading {
+    cursor: url('assets/icons/busy.ani') 16 16, wait;
+}
+
+/* General Body & Layout */
+body {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12px;
+    background-image: url('assets/images/space1.webp');
+    color: #000000;
+    margin: 20px;
+    border: 2px outset #000000;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+a {
+    color: #0000FF;
+    cursor: url('assets/icons/link.cur'), auto !important;
+}
+
+a:visited {
+    color: #800080;
+    cursor: url('assets/icons/link.cur'), auto !important;
+}
+
+h1, h2, h3 {
+    font-family: "Times New Roman", Times, serif;
+}
+
+h1 {
+    font-size: 24px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 18px;
+    border-bottom: 1px solid #000000;
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #000;
+    margin-bottom: 10px;
+}
+
+.site-title {
+    font-size: 36px;
+    font-weight: bold;
+    font-family: "Comic Neue", cursive, sans-serif;
+    color: #00FFFF;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+nav li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #00FFFF;
+}
+
+nav a:visited {
+    color: #00FFFF;
+}
+
+.site-title-link {
+    text-decoration: none;
+}
+
+/* Sections */
+section {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #F0F0F0;
+    border: 2px inset #000000;
+}
+
+#intro {
+    text-align: center;
+}
+
+.aboutme-image {
+    width: 150px;
+    height: 150px;
+    border: 2px solid #000;
+    float: left;
+    margin-right: 15px;
+}
+
+.see-all-blogs-link {
+    display: block;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.blog-previews, .project-previews, .document-previews {
+    display: block;
+}
+
+.blog-preview-box, .project-preview-box, .document-preview-box {
+    border: 1px solid #999;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.blog-preview-box h3, .project-preview-box h3, .document-preview-box h3 {
+    margin-top: 0;
+}
+
+.read-more, .project-link {
+    font-weight: bold;
+}
+
+.social-links {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.social-link {
+    display: inline-block;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.social-link img {
+    width: 32px;
+    height: 32px;
+    border: 0;
+}
+
+/* Hide modern elements */
+#themeToggle, #noise-simulator {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    font-size: 10px;
+    margin-top: 20px;
+    border-top: 1px dashed #000;
+    padding-top: 10px;
+}
+
+/* Noise Simulator */
+#noise-simulator {
+    text-align: center;
+}
+
+#noiseCanvas {
+    border: 2px inset #000000;
+    background-color: #000;
+    width: 100%;
+    height: 400px;
+}
+
+.noise-controls {
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #000;
+    display: inline-block;
+    background-color: #dfdfdf;
+}
+
+.noise-controls div {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+body.stretch-main {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 40px);
+}
+
+body.stretch-main > section {
+    flex-grow: 1;
+}
+
+#perlin-animation {
+    border: 2px inset #000000;
+    background-color: #000;
+    margin-bottom: 10px;
+    height: 400px;
+}
+
+#perlin-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* Spotify Now Playing Widget */
+#spotify-now-playing {
+    background-color: #F0F0F0; /* Changed from Spotify green to match other sections */
+    border: 2px inset #000000;
+    color: #000000; /* Changed from white to black */
+}
+
+.spotify-widget {
+    padding: 15px;
+}
+
+.spotify-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Changed from white to a transparent black */
+    padding-bottom: 10px;
+}
+
+.spotify-logo {
+    height: 24px;
+    margin-right: 10px;
+}
+
+.now-playing-text {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.track-display {
+    display: flex;
+    align-items: center;
+}
+
+.album-art {
+    position: relative;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.album-art img {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #000;
+    border-radius: 4px;
+}
+
+.play-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.track-details {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.track-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.artist-name, .album-name, .not-playing .message, .loading {
+    opacity: 0.8;
+}
+
+.track-progress {
+    width: 100%;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: rgba(0, 0, 0, 0.1); /* Changed from white to a transparent black */
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #000000; /* Changed from white to black */
+    border-radius: 2px;
+    transition: width 1s linear;
+}
+
+.time-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+.not-playing, .error, .loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.not-playing .spotify-icon,
+.error .error-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.not-playing .message,
+.error .message,
+.loading {
+    font-size: 14px;
+}
+
+.error {
+    background-color: #e74c3c;
+    color: white; /* Keep error text white for readability */
+}
+
+.error .message {
+    color: white;
+}
+
+/* Windows 2000 Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #D4D0C8;
+    border-left: 1px solid #808080;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #D4D0C8;
+    border: 2px outset #D4D0C8;
+    border-color: #FFFFFF #404040 #404040 #FFFFFF;
+    min-height: 28px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #E0E0E0;
+}
+
+::-webkit-scrollbar-thumb:active {
+    border-style: inset;
+    border-color: #404040 #FFFFFF #FFFFFF #404040;
+}
+
+::-webkit-scrollbar-button:single-button {
+    background-color: #C0C0C0;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #FFFFFF #000000 #000000 #FFFFFF;
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+}
+
+::-webkit-scrollbar-button:single-button:active {
+    border-color: #000000 #FFFFFF #FFFFFF #000000;
+    background-color: #808080;
+}
+
+/* Single up arrow at top */
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+    background-color: #C0C0C0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="7" height="4"><polygon points="3.5,0 0,4 7,4" fill="black"/></svg>');
+    background-size: 7px 4px;
+}
+
+/* Single down arrow at bottom */
+::-webkit-scrollbar-button:single-button:vertical:increment {
+    background-color: #C0C0C0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="7" height="4"><polygon points="3.5,4 0,0 7,0" fill="black"/></svg>');
+    background-size: 7px 4px;
+}
+
+/* Single left arrow */
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+    background-color: #C0C0C0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="7"><polygon points="0,3.5 4,0 4,7" fill="black"/></svg>');
+    background-size: 4px 7px;
+}
+
+/* Single right arrow */
+::-webkit-scrollbar-button:single-button:horizontal:increment {
+    background-color: #C0C0C0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="7"><polygon points="4,3.5 0,0 0,7" fill="black"/></svg>');
+    background-size: 4px 7px;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #D4D0C8;
+} 
