@@ -101,7 +101,33 @@ section {
 }
 
 #intro {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 20px 30px;
+}
+
+.intro-content {
+    flex: 1;
+    text-align: left;
+}
+
+.intro-content h1 {
+    text-align: left;
+}
+
+.profile-picture-container {
+    flex-shrink: 0;
+}
+
+#profilePic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #000;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .aboutme-image {
