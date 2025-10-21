@@ -360,7 +360,14 @@ window.openWelcomeTxt = function() {
 
 // Generic function to open any HTML document
 window.openHTMLDocument = function(id, title, src, left, top) {
-    createWindowWithIframe(id, title, src, left || 260, top || 180);
+    // Check if src is an external URL (http:// or https://)
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+        // Open external links in a new tab
+        window.open(src, '_blank');
+    } else {
+        // Open local documents in an iframe window
+        createWindowWithIframe(id, title, src, left || 260, top || 180);
+    }
 }
 
 // Deprecated: kept for backwards compatibility

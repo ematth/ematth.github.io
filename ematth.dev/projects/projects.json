@@ -19,19 +19,6 @@
     "links": []
   },  
   {
-    "id": "pips",
-    "title": "Pips/Dominoes Puzzle Framework",
-    "technologies": "Python, Webscraping",
-    "year": "August 2025 - Present",
-    "description": "A vanilla Python3 framework for solving and generating puzzles based on the NYTGames \"Pips\" puzzle. Includes a webscraper for collecting and formatting puzzles from the NYTGames website.",
-    "links": [
-      {
-        "text": "GitHub",
-        "url": "https://github.com/ematth/pips"
-      }
-    ]
-  }, 
-  {
     "id": "conversational-ai",
     "title": "Untitled Stealth Conversational AI Project",
     "collaborators": "Mark Bauer, Tyler Lee, Quinn Ouyang",
@@ -40,6 +27,23 @@
     "links": []
   },
   {
+    "id": "pips",
+    "title": "Pips/Dominoes Puzzle Framework",
+    "technologies": "Python, Webscraping",
+    "year": "August - October 2025",
+    "description": "A vanilla Python framework for solving and generating puzzles based on the NYTGames \"Pips\" puzzle. Includes a webscraper for collecting and formatting puzzles from the NYTGames website.",
+    "links": [
+      {
+        "text": "Report",
+        "url": "https://github.com/ematth/pips/blob/main/project-report.ipynb"
+      },
+      {
+        "text": "GitHub",
+        "url": "https://github.com/ematth/pips"
+      }
+    ]
+  }, 
+  {
     "id": "thesis",
     "title": "Thesis: Text Recaptioning for Audio Diffusion Models",
     "technologies": "Python, Jupyter Notebook, PyTorch",
@@ -47,6 +51,10 @@
     "year": "August 2024 - May 2025",
     "description": "M.S. Thesis on output variability in audio diffusion models. Investigates the difference in output quality and diversity when using reworded prompts for text-to-audio generation. Experiments are performed using the AudioLDM and MusicGen models, with a focus on sound effect generation.",
     "links": [
+      {
+        "text": "IDEALS - Illinois Library",
+        "url": "https://hdl.handle.net/2142/129612"
+      },
       {
         "text": "Paper",
         "url": "../assets/documents/matthews-thesis.pdf"

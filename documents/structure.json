@@ -4,13 +4,60 @@
       "name": "Photos",
       "icon": "📷",
       "type": "folder",
-      "contents": []
+      "contents": [
+        {
+          "name": "WASPAA 2025 & Lake Tahoe Hiking",
+          "icon": "🖼️",
+          "type": "file",
+          "openFunction": "openHTMLDocument",
+          "documentId": "waspaa-2025",
+          "documentTitle": "WASPAA 2025 & Lake Tahoe Hiking",
+          "documentSrc": "documents/photos/waspaa-2025.html"
+        }
+      ]
     },
     {
       "name": "Music",
       "icon": "🎵",
       "type": "folder",
-      "contents": []
+      "contents": [
+        {
+          "name": "Chopin - Etude in G sharp minor, Op. 25 No. 6 (Tianyao Lyu)",
+          "icon": "🎵",
+          "type": "file",
+          "openFunction": "openHTMLDocument",
+          "documentId": "chopin-etude-g-sharp-minor-tianyao-lyu",
+          "documentTitle": "Tianyao Lyu's Etude in G sharp minor, Op. 25 No. 6",
+          "documentSrc": "https://youtu.be/oO5XI5HByHQ?si=5oIrs0DRdMEOfM28&t=476"
+        },
+        {
+          "name": "Scriabin - Sonata No. 4, Op. 30 (Ivo Pogorelich)",
+          "icon": "🎵",
+          "type": "file",
+          "openFunction": "openHTMLDocument",
+          "documentId": "scriabin-sonata-4-ivo-pogorelich",
+          "documentTitle": "Scriabin - Sonata No. 4, Op. 30 (Ivo Pogorelich)",
+          "documentSrc": "https://www.youtube.com/watch?v=k9BZWNBFV1U"
+        },
+        {
+          "name": "Scriabin - Prometheus: The Poem of Fire (Mariinsky Orchestra)",
+          "icon": "🎵",
+          "type": "file",
+          "openFunction": "openHTMLDocument",
+          "documentId": "scriabin-prometheus-mariinsky-orchestra",
+          "documentTitle": "Scriabin - Prometheus: The Poem of Fire (Mariinsky Orchestra)",
+          "documentSrc": "https://www.youtube.com/watch?v=LDK89R93Y_c"
+        },
+        {
+          "name": "Einojuhani Rautavaara - Cantus Arcticus",
+          "icon": "🎵",
+          "type": "file",
+          "openFunction": "openHTMLDocument",
+          "documentId": "rautavaara-cantus-arcticus",
+          "documentTitle": "Einojuhani Rautavaara - Cantus Arcticus",
+          "documentSrc": "https://www.youtube.com/watch?v=TO3YRZWLvQo"
+        }
+      ]
     }
   ],
   "files": [
